@@ -1,10 +1,17 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,79 +57,202 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
             JOptionPane.showMessageDialog(null, "Error ");
         }
 
-        /*
-
-        int initialSize = listOfRecommendation.size();
-        numberOfPages = (int) Math.ceil(initialSize / 10.0);
-
-        container = new JPanel(cardLayout);
-        //Map<String, JPanel> record = new HashMap<>();
-
-        Iterator<Recommendation> iteratorList = listOfRecommendation.iterator();
-        for (int i = 0; i < numberOfPages; i ++) {
-            JPanel panel = new JPanel(new GridLayout(2, 5, 10, 10));
-            int count = 0;
-            while (iteratorList.hasNext() && count < 10) {
-                Recommendation item = iteratorList.next();
-                JLabel label = new JLabel(Recommendation.getNameFromRecommendation(String.valueOf(item.movieID)));
-                JPanel holder = new JPanel();
-                holder.setBackground(Color.BLUE);
-                holder.add(label);
-                panel.add(holder);
-                iteratorList.remove();
-                count++;
-            }
-            if (i == numberOfPages - 1) {
-                int remaining = 10 - (initialSize % 10);
-                for (int j = 0; j < remaining; j ++) {
-                    JPanel blank = new JPanel();
-                    blank.setBackground(Color.WHITE);
-                    panel.add(blank);
-                }
-            }
-            container.add(panel, "card" + i);
-            //record.put("card" + i, panel);
-        }
-
-
-        cardLayout.show(container, "card0");
-        container.setBounds(0, 100, 970, 600);
-        this.add(container, JLayeredPane.PALETTE_LAYER);
-
-        previous = new JLabel("Previous");
-        previous.setBounds(20, 700, 100, 50);
-        previous.addMouseListener(this);
-        this.add(previous, JLayeredPane.PALETTE_LAYER);
-        previous.setVisible(false);
-
-        next = new JLabel("Next");
-        next.setBounds(400, 700, 100, 50);
-        next.addMouseListener(this);
-        this.add(next, JLayeredPane.PALETTE_LAYER);
-
-
-         */
-
-        // Temporary field
-        JPanel panel = new JPanel(new FlowLayout());
-        panel.setBounds(200, 300, 600, 500);
-        panel.setBackground(new Color(255, 255, 255, 0));
-
-        System.out.println(listOfRecommendation.size());
-
         if (listOfRecommendation.isEmpty()) {
+            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
+            panel.setBackground(new Color(255, 255, 255, 0));
             JLabel name = new JLabel("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
+            name.setFont(new Font("Avenir", Font.PLAIN, 20));
             panel.add(name);
+            add(panel, PALETTE_LAYER);
+
+        } else {
+            int initialSize = listOfRecommendation.size();
+            numberOfPages = (int) Math.ceil(initialSize / 10.0);
+
+            container = new JPanel(cardLayout);
+
+            Iterator<Recommendation> iteratorList = listOfRecommendation.iterator();
+
+            JFrame popUpLoading = new JFrame("Loading");
+            popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            popUpLoading.setLayout(new FlowLayout());
+            popUpLoading.setSize(300, 50);
+            popUpLoading.setLocationRelativeTo(null);
+            popUpLoading.setVisible(true);
+
+            int pageCount = 0;
+            for (int i = 0; i < numberOfPages; i++) {
+                JPanel panel = new JPanel(new GridLayout(2, 5, 10, 10));
+                int count = 0;
+
+                while (iteratorList.hasNext() && count < 10) {
+                    JPanel holder = new JPanel(null);
+                    holder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
+                    Recommendation item = iteratorList.next();
+
+                    String movieName = Recommendation.getNameFromRecommendation(String.valueOf(item.movieID));
+                    JLabel label = new JLabel("<html>" + movieName + "</html>");
+                    label.setBounds(2, 190, 120, 75);
+                    label.setFont(new Font("Avenir", Font.PLAIN, 16));
+                    label.setVerticalAlignment(JLabel.TOP);
+                    label.setBackground(Color.GREEN);
+                    label.setOpaque(true);
+
+                    JLabel posterLabel = new JLabel();
+                    posterLabel.setBounds(2, 2, 160, 190);
+                    posterLabel.setBackground(Color.YELLOW);
+                    posterLabel.setOpaque(true);
+
+                    String urlText = Recommendation.getURLFromRecommendation(String.valueOf(item.movieID));
+
+                    assert urlText != null;
+                    if (urlText.equals("null")) {
+                        ImageIcon image = new ImageIcon("asset/No image.png");
+                        Image imageResized = image.getImage();
+                        imageResized = imageResized.getScaledInstance(160, 190, Image.SCALE_SMOOTH);
+                        ImageIcon posterImage = new ImageIcon(imageResized);
+                        posterLabel.setIcon(posterImage);
+                        posterLabel.addMouseListener(new MouseListener() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseReleased(MouseEvent e) {
+                                System.out.println(item.movieID);
+                            }
+
+                            @Override
+                            public void mouseEntered(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseExited(MouseEvent e) {
+
+                            }
+                        });
+                        System.out.println("No url");
+                    } else {
+                        try {
+                            URL imageURL = new URI(urlText).toURL();
+                            System.out.println(imageURL);
+                            BufferedImage image = ImageIO.read(imageURL);
+                            Image imageResize = image.getScaledInstance(160, 190, Image.SCALE_SMOOTH);
+                            ImageIcon posterImage = new ImageIcon(imageResize);
+                            posterLabel.setIcon(posterImage);
+                            posterLabel.addMouseListener(new MouseListener() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseReleased(MouseEvent e) {
+                                    System.out.println(item.movieID);
+                                }
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+
+                                }
+                            });
+                        } catch (URISyntaxException | IOException ex) {
+                            JOptionPane.showMessageDialog(null, "Invalid URL for movie " + item.movieID);
+                        }
+                    }
+
+                    ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
+
+                    boolean available = false;
+
+                    for (Favourite fav: currentFav) {
+                        if (fav.movieID.equals(String.valueOf(item.movieID))) {
+                            available = true;
+                            break;
+                        }
+                    }
+
+                    JLabel bookmarkHolder = new JLabel();
+                    bookmarkHolder.setBounds(126, 190, 43, 45);
+                    ImageIcon image;
+
+                    if (!available) {
+                        image = new ImageIcon("asset/Bookmark_No.png");
+                    } else {
+                        image = new ImageIcon("asset/Bookmark_Yes.png");
+                    }
+
+                    Image resizeImage = image.getImage();
+                    resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                    image = new ImageIcon(resizeImage);
+
+                    bookmarkHolder.setIcon(image);
+
+                    holder.setBackground(Color.BLUE);
+                    holder.add(label);
+                    holder.add(posterLabel);
+                    holder.add(bookmarkHolder);
+
+                    panel.add(holder);
+                    iteratorList.remove();
+                    count++;
+                }
+
+                if (i == numberOfPages - 1) {
+                    int remaining = 0;
+                    if (initialSize % 10 != 0) {
+                        remaining = 10 - (initialSize % 10);
+                    }
+                    for (int j = 0; j < remaining; j++) {
+                        JPanel blank = new JPanel();
+                        blank.setBackground(Color.WHITE);
+                        panel.add(blank);
+                    }
+                }
+                container.add(panel, "card" + i);
+                pageCount = i;
+            }
+
+            popUpLoading.dispose();
+
+            cardLayout.show(container, "card0");
+            container.setBounds(title.getX(), title.getY() + title.getHeight() + 10, 860, 550);
+            this.add(container, JLayeredPane.PALETTE_LAYER);
+
+            if (pageCount > 0) {
+                previous = new JLabel("Previous");
+                previous.setBounds(20, 700, 100, 50);
+                previous.addMouseListener(this);
+                this.add(previous, JLayeredPane.PALETTE_LAYER);
+                previous.setVisible(false);
+
+                next = new JLabel("Next");
+                next.setBounds(400, 700, 100, 50);
+                next.addMouseListener(this);
+                this.add(next, JLayeredPane.PALETTE_LAYER);
+            }
         }
 
-        for (Recommendation recommendation : listOfRecommendation) {
-            JLabel name = new JLabel(Recommendation.getNameFromRecommendation(String.valueOf(recommendation.movieID)));
-            name.setFont(new Font("Arial", Font.PLAIN, 20));
-            panel.setPreferredSize(new Dimension(600, 100));
-            panel.add(name);
-        }
 
-        add(panel, PALETTE_LAYER);
     }
 
     @Override

@@ -151,7 +151,6 @@ public class UserFrame implements ActionListener, MouseListener {
 
         searchLayer = new JPanel();
         searchLayer.setBackground(Color.RED);
-        System.out.println(userID);
 
         favouriteListLayer = new JPanel();
         favouriteListLayer.setBackground(Color.MAGENTA);
