@@ -24,6 +24,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
     JLabel previous, next;
     int currentDisplay = 0, numberOfPages;
     UserMainPage(String userID) {
+
         this.setSize(970, 768);
 
         ImageIcon background = new ImageIcon("asset/User Background.jpg");
@@ -39,8 +40,6 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
         title.setVerticalAlignment(JLabel.CENTER);
         this.add(title, JLayeredPane.PALETTE_LAYER);
 
-        // Search results - testing
-        // Final filtered array
         ArrayList<Recommendation> listOfRecommendation = new ArrayList<>();
 
         try {
@@ -141,11 +140,10 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                                 posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             }
                         });
-                        System.out.println("No url");
+
                     } else {
                         try {
                             URL imageURL = new URI(urlText).toURL();
-                            System.out.println(imageURL);
                             BufferedImage image = ImageIO.read(imageURL);
                             Image imageResize = image.getScaledInstance(160, 190, Image.SCALE_SMOOTH);
                             ImageIcon posterImage = new ImageIcon(imageResize);
@@ -199,73 +197,60 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
                     JLabel bookmarkHolder = new JLabel();
                     bookmarkHolder.setBounds(120, 200, 43, 45);
-                    ImageIcon image;
 
-                    if (!available) {
-                        image = new ImageIcon("asset/Bookmark_No.png");
-                        Image resizeImage = image.getImage();
-                        resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-                        image = new ImageIcon(resizeImage);
-                        bookmarkHolder.setIcon(image);
-                        bookmarkHolder.addMouseListener(new MouseListener() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
+                    ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
+                    Image resizeBookmarkedImage = bookmarkedIcon.getImage();
+                    resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                    bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
 
+                    ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
+                    Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
+                    resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                    notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
+
+                    bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
+
+                    ImageIcon finalBookmarkedIcon = bookmarkedIcon;
+                    ImageIcon finalNotBookmarkedIcon = notBookmarkedIcon;
+                    bookmarkHolder.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            boolean isCurrentlyBookmarked = bookmarkHolder.getIcon() == finalBookmarkedIcon;
+
+                            if (isCurrentlyBookmarked) {
+                                Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieID));
+                                bookmarkHolder.setIcon(finalNotBookmarkedIcon);
+                                JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            } else {
+                                Favourite.addFavouriteToList(userID, String.valueOf(item.movieID));
+                                bookmarkHolder.setIcon(finalBookmarkedIcon);
+                                JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                             }
 
-                            @Override
-                            public void mousePressed(MouseEvent e) {
+                            UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
+                            UserFrame.overallLayer.add(new FavouriteList(userID), "Favourite");
+                        }
 
-                            }
+                        @Override
+                        public void mousePressed(MouseEvent e) {
 
-                            @Override
-                            public void mouseReleased(MouseEvent e) {
+                        }
 
-                            }
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
 
-                            @Override
-                            public void mouseEntered(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                            }
+                        }
 
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                            }
-                        });
-                    } else {
-                        image = new ImageIcon("asset/Bookmark_Yes.png");
-                        Image resizeImage = image.getImage();
-                        resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-                        image = new ImageIcon(resizeImage);
-                        bookmarkHolder.setIcon(image);
-                        bookmarkHolder.addMouseListener(new MouseListener() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        }
 
-                            }
-
-                            @Override
-                            public void mousePressed(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseReleased(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseEntered(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                            }
-
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                            }
-                        });
-                    }
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                        }
+                    });
 
 
 
@@ -316,6 +301,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
 
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

@@ -134,7 +134,7 @@ public class GuestFrame implements ActionListener, MouseListener {
 
         JLayeredPane homeLayer = new GuestMainPage();
 
-        JLayeredPane searchLayer = new MovieSearch();
+        JLayeredPane searchLayer = new MovieSearch(null);
 
         overallLayer = new JPanel();
         overallLayer.setLayout(cardLayout);

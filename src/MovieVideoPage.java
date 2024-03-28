@@ -84,15 +84,11 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         JLabel synopsisTitle = new JLabel("Synopsis");
         synopsisTitle.setFont(new Font("Advent Pro", Font.BOLD, 30));
         synopsisTitle.setBounds(playPanel.getX() + playPanel.getWidth() + 30, playPanel.getY(), 150, 50);
-        synopsisTitle.setBackground(Color.BLUE);
-        synopsisTitle.setOpaque(true);
 
         JLabel synopsisText = new JLabel("<html>" + synopsis + "</html>");
         synopsisText.setFont(new Font("Avenir", Font.PLAIN, 18));
         synopsisText.setBounds(synopsisTitle.getX() + synopsisTitle.getWidth(), synopsisTitle.getY() + 18, 450, 350);
         synopsisText.setVerticalAlignment(JLabel.TOP);
-        synopsisText.setBackground(Color.YELLOW);
-        synopsisText.setOpaque(true);
 
         JLabel favouritesPrompt = new JLabel("Save to Favourites:");
         favouritesPrompt.setFont(new Font("Advent Pro", Font.BOLD, 30));
@@ -112,73 +108,63 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
 
         JLabel bookmarkHolder = new JLabel();
         bookmarkHolder.setBounds(favouritesPrompt.getX() + favouritesPrompt.getWidth(), favouritesPrompt.getY() + 5, 43, 45);
-        ImageIcon imageBookmark;
 
-        if (!available) {
-            imageBookmark = new ImageIcon("asset/Bookmark_No.png");
-            Image resizeImage = imageBookmark.getImage();
-            resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-            imageBookmark = new ImageIcon(resizeImage);
-            bookmarkHolder.setIcon(imageBookmark);
-            bookmarkHolder.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
+        ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
+        Image resizeBookmarkedImage = bookmarkedIcon.getImage();
+        resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+        bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
 
+        ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
+        Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
+        resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+        notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
+
+        bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
+
+        ImageIcon finalBookmarkedIcon = bookmarkedIcon;
+        ImageIcon finalNotBookmarkedIcon = notBookmarkedIcon;
+        bookmarkHolder.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                boolean isCurrentlyBookmarked = bookmarkHolder.getIcon() == finalBookmarkedIcon;
+
+                if (isCurrentlyBookmarked) {
+                    Favourite.removeFavouriteFromList(userID, String.valueOf(movieID));
+                    bookmarkHolder.setIcon(finalNotBookmarkedIcon);
+                    JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                    UserFrame.frame.dispose();
+                    new UserFrame(userID, frame.getX(), frame.getY());
+                    UserFrame.frame.setVisible(false);
+                } else {
+                    Favourite.addFavouriteToList(userID, String.valueOf(movieID));
+                    bookmarkHolder.setIcon(finalBookmarkedIcon);
+                    JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                    UserFrame.frame.dispose();
+                    new UserFrame(userID, frame.getX(), frame.getY());
+                    UserFrame.frame.setVisible(false);
                 }
+            }
 
-                @Override
-                public void mousePressed(MouseEvent e) {
+            @Override
+            public void mousePressed(MouseEvent e) {
 
-                }
+            }
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
+            @Override
+            public void mouseReleased(MouseEvent e) {
 
-                }
+            }
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                }
-            });
-        } else {
-            imageBookmark = new ImageIcon("asset/Bookmark_Yes.png");
-            Image resizeImage = imageBookmark.getImage();
-            resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-            imageBookmark = new ImageIcon(resizeImage);
-            bookmarkHolder.setIcon(imageBookmark);
-            bookmarkHolder.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                }
-            });
-        }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
 
         rateButton = new JButton("Rate me!");
         rateButton.setBackground(Color.DARK_GRAY);
@@ -240,6 +226,11 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                 } else {
                     JOptionPane.showMessageDialog(null, "Can't open in browser.");
                 }
+                History.readHistoryFromFile();
+                History history = new History(Integer.parseInt(userID), movieID, Instant.now());
+                System.out.println(Integer.parseInt(userID) + "\t" + movieID + "\t" + Instant.now());
+                History.overallHistoryList.add(history);
+                History.writeHistoryToFile();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Video is not available. Please search the movie manually online.");
             }
@@ -263,7 +254,6 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
 
                 Ratings.readRatingToList();
                 Ratings ratingItem = new Ratings(Integer.parseInt(userID), movieID, rating, (int) epochTime);
-                System.out.println(Integer.parseInt(userID) + "\t" + movieID + "\t" + rating + "\t" + (int) epochTime);
                 Ratings.ratingsEntireList.add(ratingItem);
                 Ratings.writeRatingToFile();
 

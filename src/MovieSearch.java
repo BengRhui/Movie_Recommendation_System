@@ -1,12 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class MovieSearch extends JLayeredPane {
+public class MovieSearch extends JLayeredPane implements KeyListener {
 
-    JLabel title, backgroundPlaceholder, searchLogoPlaceholder;
+    JLabel title, backgroundPlaceholder, searchLogoPlaceholder, promptText;
     JPanel searchBarPlaceholder;
+    JTextField textField;
 
-    MovieSearch() {
+    MovieSearch(String userID) {
 
         this.setSize(970, 768);
 
@@ -37,6 +40,39 @@ public class MovieSearch extends JLayeredPane {
         searchLogoPlaceholder.setHorizontalAlignment(JLabel.CENTER);
         searchLogoPlaceholder.setVerticalAlignment(JLabel.CENTER);
         this.add(searchLogoPlaceholder, JLayeredPane.MODAL_LAYER);
+
+        promptText = new JLabel("Type the movie name here.");
+        promptText.setFont(new Font("Avenir", Font.PLAIN, 18));
+        promptText.setForeground(Color.LIGHT_GRAY);
+        promptText.setBounds(90, 130, 800, 70);
+        this.add(promptText, JLayeredPane.MODAL_LAYER);
+
+        textField = new JTextField();
+        textField.setFont(new Font("Avenir", Font.PLAIN, 20));
+        textField.setBounds(promptText.getX(), promptText.getY(), promptText.getWidth() - 100, promptText.getHeight());
+        textField.setBackground(new Color(255, 255, 255, 0));
+        textField.setBorder(null);
+        this.add(textField, JLayeredPane.POPUP_LAYER);
+        textField.addKeyListener(this);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getSource() == textField && !textField.getText().isEmpty()) {
+            promptText.setForeground(Color.WHITE);
+        } else if (e.getSource() == textField && textField.getText().isEmpty()) {
+            promptText.setForeground(Color.LIGHT_GRAY);
+        }
     }
 }
 

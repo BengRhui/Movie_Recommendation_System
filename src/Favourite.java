@@ -1,8 +1,8 @@
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.xml.stream.FactoryConfigurationError;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Favourite {
 
@@ -31,6 +31,19 @@ public class Favourite {
         }
     }
 
+    public static void writeFavouriteToFile() {
+        try {
+            BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/favourite.txt"));
+            for (Favourite fav: overallFavouriteList) {
+                wr.write(fav.userID + ";" + fav.movieID);
+                wr.newLine();
+            }
+            wr.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Failed to write to favourite.txt. Please inspect.");
+        }
+    }
+
     public static ArrayList<Favourite> filterBasedOnID(String userID) {
         readToList();
         ArrayList<Favourite> filteredList = new ArrayList<>();
@@ -40,6 +53,25 @@ public class Favourite {
             }
         }
         return filteredList;
+    }
+
+    public static void addFavouriteToList(String userID, String movieID) {
+        readToList();
+        Favourite fav = new Favourite(userID, movieID);
+        overallFavouriteList.add(fav);
+        writeFavouriteToFile();
+    }
+
+    public static void removeFavouriteFromList(String userID, String movieID) {
+        readToList();
+        int index = -1;
+        for (int i = 0; i < overallFavouriteList.size(); i ++) {
+            if (overallFavouriteList.get(i).userID.equals(userID) && overallFavouriteList.get(i).movieID.equals(movieID)) {
+                index = i;
+            }
+        }
+        overallFavouriteList.remove(index);
+        writeFavouriteToFile();
     }
 
 }

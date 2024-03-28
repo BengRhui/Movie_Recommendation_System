@@ -32,47 +32,33 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        JLabel title = new JLabel("Top picks we recommend:");
+        JLabel title = new JLabel("Your favourite movie list:");
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
         title.setVerticalAlignment(JLabel.CENTER);
         this.add(title, JLayeredPane.PALETTE_LAYER);
 
-        // Search results - testing
-        // Final filtered array
-        ArrayList<Recommendation> listOfRecommendation = new ArrayList<>();
+        Favourite.readToList();
+        ArrayList<Favourite> listOfFavourites = Favourite.filterBasedOnID(userID);
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("textfile/recommendation.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] arrayFromFile = line.split(";");
-                if (Double.parseDouble(arrayFromFile[0]) == Double.parseDouble(userID)) {
-                    Recommendation newRec = new Recommendation(arrayFromFile[0], arrayFromFile[1], arrayFromFile[2]);
-                    listOfRecommendation.add(newRec);
-                }
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error ");
-        }
 
-        if (listOfRecommendation.isEmpty()) {
+        if (listOfFavourites.isEmpty()) {
             JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
             panel.setBackground(new Color(255, 255, 255, 0));
-            JLabel name = new JLabel("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
+            JLabel name = new JLabel("No favourites yet. Do add some of the movies to our favourite list for easy access.");
             name.setFont(new Font("Avenir", Font.PLAIN, 20));
             panel.add(name);
             add(panel, PALETTE_LAYER);
 
         } else {
-            int initialSize = listOfRecommendation.size();
+            int initialSize = listOfFavourites.size();
             numberOfPages = (int) Math.ceil(initialSize / 10.0);
 
             container = new JPanel(cardLayout);
 
-            Iterator<Recommendation> iteratorList = listOfRecommendation.iterator();
+            Iterator<Favourite> iteratorList = listOfFavourites.iterator();
 
             JFrame popUpLoading = new JFrame("Loading");
             popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,22 +76,18 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                     JPanel holder = new JPanel(null);
                     holder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
-                    Recommendation item = iteratorList.next();
+                    Favourite item = iteratorList.next();
 
-                    String movieName = Recommendation.getNameFromRecommendation(String.valueOf(item.movieID));
+                    String movieName = Movies.getNameFromMovieId(item.movieID);
                     JLabel label = new JLabel("<html>" + movieName + "</html>");
-                    label.setBounds(2, 190, 120, 75);
+                    label.setBounds(10, 200, 110, 75);
                     label.setFont(new Font("Avenir", Font.PLAIN, 16));
                     label.setVerticalAlignment(JLabel.TOP);
-                    label.setBackground(Color.GREEN);
-                    label.setOpaque(true);
 
                     JLabel posterLabel = new JLabel();
                     posterLabel.setBounds(2, 2, 160, 190);
-                    posterLabel.setBackground(Color.YELLOW);
-                    posterLabel.setOpaque(true);
 
-                    String urlText = Recommendation.getURLFromRecommendation(String.valueOf(item.movieID));
+                    String urlText = Movies.getUrlFromMovieId(item.movieID);
 
                     assert urlText != null;
                     if (urlText.equals("null")) {
@@ -127,24 +109,28 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
                             @Override
                             public void mouseReleased(MouseEvent e) {
-                                System.out.println(item.movieID);
+                                try {
+                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID);
+                                    UserFrame.frame.setVisible(false);
+                                } catch (IOException ex) {
+                                    JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
+                                }
                             }
 
                             @Override
                             public void mouseEntered(MouseEvent e) {
-
+                                posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                             }
 
                             @Override
                             public void mouseExited(MouseEvent e) {
-
+                                posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             }
                         });
-                        System.out.println("No url");
+
                     } else {
                         try {
                             URL imageURL = new URI(urlText).toURL();
-                            System.out.println(imageURL);
                             BufferedImage image = ImageIO.read(imageURL);
                             Image imageResize = image.getScaledInstance(160, 190, Image.SCALE_SMOOTH);
                             ImageIcon posterImage = new ImageIcon(imageResize);
@@ -162,17 +148,22 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
-                                    System.out.println(item.movieID);
+                                    try {
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID);
+                                        UserFrame.frame.setVisible(false);
+                                    } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
+                                    }
                                 }
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
-
+                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                                 }
 
                                 @Override
                                 public void mouseExited(MouseEvent e) {
-
+                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                                 }
                             });
                         } catch (URISyntaxException | IOException ex) {
@@ -191,26 +182,58 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                         }
                     }
 
-                    JLabel bookmarkHolder = new JLabel();
-                    bookmarkHolder.setBounds(126, 190, 43, 45);
-                    ImageIcon image;
+                    JLabel removeHolder = new JLabel();
+                    removeHolder.setBounds(120, 200, 43, 45);
 
-                    if (!available) {
-                        image = new ImageIcon("asset/Bookmark_No.png");
-                    } else {
-                        image = new ImageIcon("asset/Bookmark_Yes.png");
-                    }
+                    ImageIcon removeIcon = new ImageIcon("asset/Remove.png");
+                    Image resizeBookmarkedImage = removeIcon.getImage();
+                    resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                    removeIcon = new ImageIcon(resizeBookmarkedImage);
 
-                    Image resizeImage = image.getImage();
-                    resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-                    image = new ImageIcon(resizeImage);
+                    removeHolder.setIcon(removeIcon);
 
-                    bookmarkHolder.setIcon(image);
+                    removeHolder.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
 
-                    holder.setBackground(Color.BLUE);
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+                            Favourite.removeFavouriteFromList(userID, item.movieID);
+                            panel.remove(holder);
+                            JPanel blank = new JPanel();
+                            blank.setBackground(Color.WHITE);
+                            panel.add(blank);
+                            container.revalidate();
+                            container.repaint();
+
+                            UserFrame.overallLayer.remove(UserFrame.homeLayer);
+                            UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            removeHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            removeHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                        }
+                    });
+
+
+
+                    holder.setBackground(Color.WHITE);
                     holder.add(label);
                     holder.add(posterLabel);
-                    holder.add(bookmarkHolder);
+                    holder.add(removeHolder);
 
                     panel.add(holder);
                     iteratorList.remove();
@@ -254,6 +277,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
 
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

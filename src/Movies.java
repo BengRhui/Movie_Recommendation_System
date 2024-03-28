@@ -227,4 +227,22 @@ public class Movies {
         }
         return url;
     }
+
+    public static String getNameFromMovieId(String movieID) {
+        for (Movies movie: movieList) {
+            if (movie.movieIdInDataset == Integer.parseInt(movieID)) {
+                return movie.title;
+            }
+        }
+        return null;
+    }
+
+    public static String getUrlFromMovieId(String movieID) {
+        for (Movies movie: movieList) {
+            if (movie.movieIdInDataset == Integer.parseInt(movieID)) {
+                return movie.posterUrl;
+            }
+        }
+        return null;
+    }
 }
