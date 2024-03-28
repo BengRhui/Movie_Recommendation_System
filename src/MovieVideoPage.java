@@ -2,36 +2,40 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MovieVideoPage implements ActionListener, MouseListener, KeyListener  {
     JFrame frame;
-    JPanel holder, shadow, emailPanel, passwordPanel;
-    JLabel signUp, emailPlaceholder, passwordPlaceholder, arrowPlaceholder, picturePlaceholder;
-    JTextField emailInput;
-    JPasswordField passwordInput;
-    JButton signUpButton;
-    Action moveCursorToPassword;
-    ArrayList<String> account = new ArrayList<>();
-    ArrayList<String> password = new ArrayList<>();
-    ArrayList<Integer> userID = new ArrayList<>();
-    static String lastFrame;
-    MovieVideoPage(double frameHorizontal, double frameVertical, int movieID) throws IOException {
+    JPanel holder, shadow, playPanel;
+    JLabel frameTitle, arrowPlaceholder, playPlaceholder;
+    JButton rateButton;
+    static String URL, userID;
+    static int movieID;
 
-        BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
+    MovieVideoPage(double frameHorizontal, double frameVertical, int movieID, String userID) throws IOException {
 
-        String line;
-        while ((line = rd.readLine()) != null) {
-            String[] splitLines = line.split(";");
-            userID.add(Integer.parseInt(splitLines[0].strip()));
-            account.add(splitLines[1].strip());
-            password.add(splitLines[2].strip());
+        MovieVideoPage.userID = userID;
+        MovieVideoPage.movieID = movieID;
+
+        String synopsis = null, title = null;
+        ArrayList<Movies> movie = Movies.movieList;
+
+        for (Movies movieItem: movie) {
+            if (movieID == movieItem.movieIdInDataset) {
+                title = movieItem.title;
+                synopsis = movieItem.plot;
+                URL = movieItem.movieUrl;
+            }
         }
 
-        rd.close();
-
-        frame = new JFrame("Movie Recommendation System");
+        frame = new JFrame("Movie Video Page");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1366, 768);
         frame.setLocation((int) frameHorizontal, (int) frameVertical);
@@ -50,69 +54,10 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         shadow.setBackground(new Color(255, 255, 255, 160));
         shadow.setBounds(50, 30, 1266, 668);
 
-        signUp = new JLabel("Sign Up");
-        signUp.setBounds(200, 75, 200, 100);
-        signUp.setFont(new Font("Advent Pro", Font.BOLD, 60));
+        frameTitle = new JLabel(title);
+        frameTitle.setBounds(200, 75, 800, 100);
+        frameTitle.setFont(new Font("Advent Pro", Font.BOLD, 60));
 
-        JLabel emailLabel = new JLabel("Email");
-        emailLabel.setBounds(200, 190, 450, 50);
-        emailLabel.setFont(new Font("Avenir", Font.PLAIN, 30));
-        emailLabel.setHorizontalAlignment(JLabel.LEFT);
-        emailLabel.setVerticalAlignment(JLabel.CENTER);
-
-        emailPanel = new NewEmailPanel();
-        emailPanel.setBounds(200, 250, 500, 80);
-        emailPanel.setBackground(new Color(255, 255, 255));
-
-        emailInput = new JTextField();
-        emailInput.setBounds(225, 260, 450, 60);
-        emailInput.setBorder(null);
-        emailInput.setFont(new Font("Avenir", Font.PLAIN, 24));
-        emailInput.setBackground(new Color(255,255,255,0));
-        moveCursorToPassword = new MoveCursorToPassword();
-        emailInput.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "nextField");
-        emailInput.getActionMap().put("nextField", moveCursorToPassword);
-        emailInput.addKeyListener(this);
-
-        emailPlaceholder = new JLabel("Example: abc123@mail.com");
-        emailPlaceholder.setFont(new Font("Avenir", Font.ITALIC, 20));
-        emailPlaceholder.setForeground(Color.GRAY);
-        emailPlaceholder.setBounds(225, 260, 450, 60);
-
-        JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setBounds(200, 340, 450, 80);
-        passwordLabel.setFont(new Font("Avenir", Font.PLAIN, 30));
-        passwordLabel.setHorizontalAlignment(JLabel.LEFT);
-        passwordLabel.setVerticalAlignment(JLabel.CENTER);
-
-        passwordPanel = new NewPasswordPanel();
-        passwordPanel.setBounds(200, 410, 500, 80);
-        passwordPanel.setBackground(new Color(255, 255, 255));
-
-        passwordInput = new JPasswordField();
-        passwordInput.setBounds(225, 420, 450, 60);
-        passwordInput.setFont(new Font("Avenir", Font.PLAIN, 25));
-        passwordInput.setBackground(new Color(255,255,255,0));
-        passwordInput.setBorder(null);
-        passwordInput.setEchoChar('●');
-        passwordInput.addActionListener(this);
-        passwordInput.addKeyListener(this);
-
-        passwordPlaceholder = new JLabel("Password must be between 4 to 20 characters.");
-        passwordPlaceholder.setFont(new Font("Avenir", Font.ITALIC, 20));
-        passwordPlaceholder.setForeground(Color.GRAY);
-        passwordPlaceholder.setBounds(225, 420, 450, 60);
-
-        signUpButton = new JButton("Sign Up");
-        signUpButton.setBounds(200, 540, 500, 80);
-        signUpButton.setFont(new Font("Avenir", Font.PLAIN, 30));
-        signUpButton.setFocusable(false);
-        signUpButton.setBackground(Color.DARK_GRAY);
-        signUpButton.setForeground(Color.WHITE);
-        signUpButton.setOpaque(true);
-        signUpButton.setBorderPainted(false);
-        signUpButton.addMouseListener(this);
-        signUpButton.addActionListener(this);
 
         ImageIcon arrowImage = new ImageIcon("asset/Back Arrow.png");
         arrowPlaceholder = new JLabel();
@@ -122,25 +67,142 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         arrowPlaceholder.setOpaque(true);
         arrowPlaceholder.addMouseListener(this);
 
-        ImageIcon signUpPicture = new ImageIcon("asset/Sign Up Picture.png");
-        picturePlaceholder = new JLabel();
-        picturePlaceholder.setBackground(Color.WHITE);
-        picturePlaceholder.setIcon(signUpPicture);
-        picturePlaceholder.setBounds(710, 80, 600, 600);
-        picturePlaceholder.setOpaque(true);
+        playPanel = new JPanel(null);
+        playPanel.setBounds(frameTitle.getX(), frameTitle.getY() + frameTitle.getHeight() + 20, 430, 430);
+        playPanel.setBorder(BorderFactory.createDashedBorder(Color.BLACK, 2, 5));
+        playPanel.setBackground(Color.LIGHT_GRAY);
 
+        ImageIcon imageIcon = new ImageIcon("asset/Play Button.png");
+        playPlaceholder = new JLabel();
+        playPlaceholder.setBounds(180, 180, 75, 75);
+        playPlaceholder.setIcon(imageIcon);
+
+        JLabel playPrompt = new JLabel("Click me to play video:");
+        playPrompt.setFont(new Font("Avenir", Font.PLAIN, 20));
+        playPrompt.setBounds(50, 120, 330, 50);
+
+        JLabel synopsisTitle = new JLabel("Synopsis");
+        synopsisTitle.setFont(new Font("Advent Pro", Font.BOLD, 30));
+        synopsisTitle.setBounds(playPanel.getX() + playPanel.getWidth() + 30, playPanel.getY(), 150, 50);
+        synopsisTitle.setBackground(Color.BLUE);
+        synopsisTitle.setOpaque(true);
+
+        JLabel synopsisText = new JLabel("<html>" + synopsis + "</html>");
+        synopsisText.setFont(new Font("Avenir", Font.PLAIN, 18));
+        synopsisText.setBounds(synopsisTitle.getX() + synopsisTitle.getWidth(), synopsisTitle.getY() + 18, 450, 350);
+        synopsisText.setVerticalAlignment(JLabel.TOP);
+        synopsisText.setBackground(Color.YELLOW);
+        synopsisText.setOpaque(true);
+
+        JLabel favouritesPrompt = new JLabel("Save to Favourites:");
+        favouritesPrompt.setFont(new Font("Advent Pro", Font.BOLD, 30));
+        favouritesPrompt.setBounds(synopsisTitle.getX(), synopsisText.getY() + synopsisText.getHeight(), 250, 50);
+        favouritesPrompt.setBackground(Color.RED);
+
+        ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
+
+        boolean available = false;
+
+        for (Favourite fav: currentFav) {
+            if (fav.movieID.equals(String.valueOf(movieID))) {
+                available = true;
+                break;
+            }
+        }
+
+        JLabel bookmarkHolder = new JLabel();
+        bookmarkHolder.setBounds(favouritesPrompt.getX() + favouritesPrompt.getWidth(), favouritesPrompt.getY() + 5, 43, 45);
+        ImageIcon imageBookmark;
+
+        if (!available) {
+            imageBookmark = new ImageIcon("asset/Bookmark_No.png");
+            Image resizeImage = imageBookmark.getImage();
+            resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+            imageBookmark = new ImageIcon(resizeImage);
+            bookmarkHolder.setIcon(imageBookmark);
+            bookmarkHolder.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
+            });
+        } else {
+            imageBookmark = new ImageIcon("asset/Bookmark_Yes.png");
+            Image resizeImage = imageBookmark.getImage();
+            resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+            imageBookmark = new ImageIcon(resizeImage);
+            bookmarkHolder.setIcon(imageBookmark);
+            bookmarkHolder.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
+            });
+        }
+
+        rateButton = new JButton("Rate me!");
+        rateButton.setBackground(Color.DARK_GRAY);
+        rateButton.setFont(new Font("Avenir", Font.PLAIN, 20));
+        rateButton.setForeground(Color.WHITE);
+        rateButton.setSize(250, 50);
+        rateButton.setLocation(synopsisText.getX() + synopsisText.getWidth() - rateButton.getWidth(), bookmarkHolder.getY());
+        rateButton.setOpaque(true);
+        rateButton.setFocusable(false);
+        rateButton.setBorderPainted(false);
+        rateButton.addMouseListener(this);
+
+        playPanel.add(playPlaceholder);
+        playPanel.add(playPrompt);
+        playPanel.addMouseListener(this);
+
+        frame.add(synopsisTitle);
+        frame.add(synopsisText);
+        frame.add(favouritesPrompt);
+        frame.add(bookmarkHolder);
+        frame.add(rateButton);
+        frame.add(playPanel);
         frame.add(arrowPlaceholder);
-        frame.add(picturePlaceholder);
-        frame.add(emailLabel);
-        frame.add(emailInput);
-        frame.add(emailPlaceholder);
-        frame.add(emailPanel);
-        frame.add(passwordLabel);
-        frame.add(passwordInput);
-        frame.add(passwordPlaceholder);
-        frame.add(passwordPanel);
-        frame.add(signUpButton);
-        frame.add(signUp);
+        frame.add(frameTitle);
         frame.add(holder);
         frame.add(shadow);
         frame.add(background);
@@ -151,62 +213,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == passwordInput) {
-            signUpButton.doClick();
-        } else if (e.getSource() == signUpButton) {
-            boolean validation = true;
-            char[] passwordChar = passwordInput.getPassword();
-            StringBuilder passwordText = new StringBuilder();
-            for (char characters: passwordChar) {
-                passwordText.append(characters);
-            }
-            if (emailInput.getText().isEmpty() || passwordText.isEmpty()) {
-                validation = false;
-                JOptionPane.showMessageDialog(frame, "Please fill in your email and password to proceed.", "Note", JOptionPane.ERROR_MESSAGE);
-            } else if (!emailInput.getText().contains("@") || !emailInput.getText().contains(".")) {
-                validation = false;
-                JOptionPane.showMessageDialog(frame, "Please provide a valid email address.", "Note", JOptionPane.ERROR_MESSAGE);
-            } else if ((passwordText.toString().length() < 4) || (passwordText.toString().length() > 20)) {
-                validation = false;
-                JOptionPane.showMessageDialog(frame, "Invalid password. Please try another password.", "Note", JOptionPane.ERROR_MESSAGE);
-            } else {
-                for (String x : account) {
-                    if (x.equals(emailInput.getText())) {
-                        validation = false;
-                        JOptionPane.showMessageDialog(frame, "The email has already been used. Please use another email.", "Note", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
 
-            if (validation) {
-                account.add(emailInput.getText());
-                char[] passwordCharacter = passwordInput.getPassword();
-                StringBuilder passwordText2 = new StringBuilder();
-                for (char letter: passwordCharacter) {
-                    passwordText2.append(letter);
-                }
-                password.add(passwordText2.toString());
-                userID.add(Collections.max(userID) + 1);
-
-                try (BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/account.txt"))) {
-                    for (int i = 0; i < userID.size(); i ++) {
-                        String lineToInsert = String.format("%-10s%-40s%s", (userID.get(i).toString() + ";"), (account.get(i) + ";"), password.get(i));
-                        wr.write(lineToInsert);
-                        wr.newLine();
-                    }
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(frame, "The file cannot be retrieved. Please inspect for any mistakes.");
-                }
-
-                JOptionPane.showMessageDialog(frame, "You have successfully registered to our system. You will be redirected to the login page.", "Note", JOptionPane.INFORMATION_MESSAGE);
-                try {
-                    new Login(frame.getX(), frame.getY());
-                    frame.dispose();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(frame, "The file cannot be retrieved. Please inspect for any mistakes.");
-                }
-            }
-        }
     }
 
     @Override
@@ -225,19 +232,60 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
             UserFrame.frame.setLocation(frame.getX(), frame.getY());
             UserFrame.frame.setVisible(true);
             frame.dispose();
+        } else if (e.getSource() == playPanel) {
+            try {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                    desktop.browse(URI.create(URL));
+                } else {
+                    JOptionPane.showMessageDialog(null, "Can't open in browser.");
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Video is not available. Please search the movie manually online.");
+            }
+        } else if (e.getSource() == rateButton) {
+            String[] options = {"5", "4", "3", "2", "1"};
+            int userChoice = JOptionPane.showOptionDialog(
+                    null,
+                    "Please choose a rating.",
+                    "New Movie Rating",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    new ImageIcon("asset/Rating.png"),
+                    options,
+                    null
+            );
+            if (userChoice != -1) {
+                int rating = 5 - userChoice;
+
+                Instant instant = Instant.now();
+                long epochTime = instant.getEpochSecond();
+
+                Ratings.readRatingToList();
+                Ratings ratingItem = new Ratings(Integer.parseInt(userID), movieID, rating, (int) epochTime);
+                System.out.println(Integer.parseInt(userID) + "\t" + movieID + "\t" + rating + "\t" + (int) epochTime);
+                Ratings.ratingsEntireList.add(ratingItem);
+                Ratings.writeRatingToFile();
+
+                JOptionPane.showMessageDialog(null, "Ratings saved successful.", "Success save", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+            }
+
         }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        signUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         arrowPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        playPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        rateButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        signUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         arrowPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        playPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        rateButton.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     @Override
@@ -252,16 +300,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
 
     @Override
     public void keyReleased(KeyEvent e) {
-        emailPlaceholder.setVisible(emailInput.getText().isEmpty());
-        passwordPlaceholder.setVisible(passwordInput.getPassword().length == 0);
-    }
 
-    public class MoveCursorToPassword extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            passwordInput.requestFocusInWindow();
-            passwordInput.setCaretPosition(0);
-        }
     }
 }
 

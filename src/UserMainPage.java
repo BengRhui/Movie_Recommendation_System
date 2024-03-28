@@ -124,7 +124,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                             @Override
                             public void mouseReleased(MouseEvent e) {
                                 try {
-                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID);
+                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID);
                                     UserFrame.frame.setVisible(false);
                                 } catch (IOException ex) {
                                     JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -164,7 +164,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
                                     try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID);
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID);
                                         UserFrame.frame.setVisible(false);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");

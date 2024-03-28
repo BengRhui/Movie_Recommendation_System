@@ -28,6 +28,7 @@ public class Movies {
         this.movieUrl = movieUrl;
     }
 
+    /*
     public static void main(String[] args) {
         new Movies();
         int count = 0;
@@ -60,6 +61,8 @@ public class Movies {
             System.out.println("System error.");
         }
     }
+
+     */
 
     static void movieIdListInitialization() {
         try {
