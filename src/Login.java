@@ -22,7 +22,7 @@ public class Login implements ActionListener, MouseListener {
 
     Login(int horizontalValue, int verticalValue) throws IOException {
 
-        BufferedReader rd = new BufferedReader(new FileReader("src/account.txt"));
+        BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
 
         String line;
         while ((line = rd.readLine()) != null) {
@@ -63,7 +63,7 @@ public class Login implements ActionListener, MouseListener {
         titleLabel3.setVerticalAlignment(JLabel.CENTER);
 
         JLabel picture = new JLabel();
-        ImageIcon clappingBoard = new ImageIcon("src/Login Background.jpg");
+        ImageIcon clappingBoard = new ImageIcon("asset/Login Background.jpg");
         picture.setIcon(clappingBoard);
         picture.setOpaque(true);
         picture.setBounds(-300, 0, 1050, 768);
@@ -213,7 +213,7 @@ public class Login implements ActionListener, MouseListener {
             }
             frame.setVisible(false);
         } else if (e.getSource() == promptGuest) {
-            ImageIcon guestIcon = new ImageIcon("src/Guest Icon.png");
+            ImageIcon guestIcon = new ImageIcon("asset/Guest Icon.png");
             Image tempImage = guestIcon.getImage();
             Image newTempImage = tempImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             guestIcon = new ImageIcon(newTempImage);

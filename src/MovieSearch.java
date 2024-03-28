@@ -10,7 +10,7 @@ public class MovieSearch extends JLayeredPane {
 
         this.setSize(970, 768);
 
-        ImageIcon background = new ImageIcon("src/User Background.jpg");
+        ImageIcon background = new ImageIcon("asset/User Background.jpg");
         backgroundPlaceholder = new JLabel();
         backgroundPlaceholder.setIcon(background);
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
@@ -27,7 +27,7 @@ public class MovieSearch extends JLayeredPane {
         searchBarPlaceholder.setBounds(50, 130, 850, 75);
         this.add(searchBarPlaceholder, JLayeredPane.PALETTE_LAYER);
 
-        ImageIcon searchIcon = new ImageIcon("src/Search Icon.png");
+        ImageIcon searchIcon = new ImageIcon("asset/Search Icon.png");
         Image resizingSearchIcon = searchIcon.getImage();
         resizingSearchIcon = resizingSearchIcon.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(resizingSearchIcon);

@@ -9,7 +9,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
 
         this.setSize(970, 768);
 
-        ImageIcon background = new ImageIcon("src/User Background.jpg");
+        ImageIcon background = new ImageIcon("asset/User Background.jpg");
         JLabel backgroundPlaceholder = new JLabel();
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
         backgroundPlaceholder.setIcon(background);
@@ -46,7 +46,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         textBox.setBounds(95, 200, 300, 100);
         this.add(textBox, JLayeredPane.MODAL_LAYER);
 
-        ImageIcon arrowImage = new ImageIcon("src/Arrow.png");
+        ImageIcon arrowImage = new ImageIcon("asset/Arrow.png");
         Image resizingArrowImage = arrowImage.getImage();
         resizingArrowImage = resizingArrowImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         arrowImage = new ImageIcon(resizingArrowImage);
@@ -55,7 +55,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         arrowPlaceholder.setIcon(arrowImage);
         this.add(arrowPlaceholder, JLayeredPane.PALETTE_LAYER);
 
-        ImageIcon decorationImage = new ImageIcon("src/Decorate.png");
+        ImageIcon decorationImage = new ImageIcon("asset/Decorate.png");
         Image resizingDecorationImage = decorationImage.getImage();
         resizingDecorationImage = resizingDecorationImage.getScaledInstance(900, 430, Image.SCALE_SMOOTH);
         decorationImage = new ImageIcon(resizingDecorationImage);

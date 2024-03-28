@@ -44,13 +44,13 @@ public class Movies {
         String line;
         ArrayList<String> tempList = new ArrayList<>();
         try {
-            BufferedReader file = new BufferedReader(new FileReader("src/Movies.txt"));
+            BufferedReader file = new BufferedReader(new FileReader("textfile/Movies.txt"));
             while ((line = file.readLine()) != null) {
                 tempList.add(line.replaceAll(";", "§"));
             }
             file.close();
 
-            BufferedWriter file2 = new BufferedWriter(new FileWriter("src/Movies.txt"));
+            BufferedWriter file2 = new BufferedWriter(new FileWriter("textfile/Movies.txt"));
             for (String line2: tempList) {
                 file2.write(line2);
                 file2.newLine();
@@ -63,7 +63,7 @@ public class Movies {
 
     static void movieIdListInitialization() {
         try {
-            BufferedReader file = new BufferedReader(new FileReader("src/Movies.txt"));
+            BufferedReader file = new BufferedReader(new FileReader("textfile/Movies.txt"));
             String line;
             while ((line = file.readLine()) != null) {
                 line = line.replaceAll("\"", "");
@@ -79,8 +79,8 @@ public class Movies {
     static void movieRetrieveFromWeb() {
         try {
             String lineInFile;
-            BufferedReader movieFile = new BufferedReader(new FileReader("src/Movies.csv"));
-            BufferedWriter movieTextFile = new BufferedWriter(new FileWriter("src/Movies.txt", true));
+            BufferedReader movieFile = new BufferedReader(new FileReader("textfile/Movies.csv"));
+            BufferedWriter movieTextFile = new BufferedWriter(new FileWriter("textfile/Movies.txt", true));
             while ((lineInFile = movieFile.readLine()) != null) {
                 String[] lineArray = lineInFile.split("\";\"");
                 for (int i = 0; i < lineArray.length; i ++) {
@@ -103,7 +103,7 @@ public class Movies {
 
     static void appendMovieObject() {
         try {
-            BufferedReader readMovieTextFile = new BufferedReader(new FileReader("src/Movies.txt"));
+            BufferedReader readMovieTextFile = new BufferedReader(new FileReader("textfile/Movies.txt"));
             String line;
             while ((line = readMovieTextFile.readLine()) != null) {
                 String[] lineArray = line.split("§");

@@ -19,7 +19,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
     UserMainPage(String userID) {
         this.setSize(970, 768);
 
-        ImageIcon background = new ImageIcon("src/User Background.jpg");
+        ImageIcon background = new ImageIcon("asset/User Background.jpg");
         JLabel backgroundPlaceholder = new JLabel();
         backgroundPlaceholder.setIcon(background);
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
@@ -37,7 +37,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
         ArrayList<Recommendation> listOfRecommendation = new ArrayList<>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/recommendation.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("textfile/recommendation.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] arrayFromFile = line.split(";");

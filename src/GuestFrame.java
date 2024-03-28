@@ -26,7 +26,7 @@ public class GuestFrame implements ActionListener, MouseListener {
         sideBarPanel.setBounds(0, 0, 400, 768);
         sideBarPanel.setBackground(Color.WHITE);
 
-        ImageIcon logo = new ImageIcon("src/Logo.jpg");
+        ImageIcon logo = new ImageIcon("asset/Logo.jpg");
         Image resizingLogo = logo.getImage();
         resizingLogo = resizingLogo.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         ImageIcon resizedLogo = new ImageIcon(resizingLogo);
@@ -98,7 +98,7 @@ public class GuestFrame implements ActionListener, MouseListener {
         overallWatchHistoryPanel.add(watchHistoryLabel, JLayeredPane.PALETTE_LAYER);
         overallWatchHistoryPanel.add(watchHistoryPanel, JLayeredPane.DEFAULT_LAYER);
 
-        ImageIcon languageIcon = new ImageIcon("src/Language Icon.png");
+        ImageIcon languageIcon = new ImageIcon("asset/Language Icon.png");
         Image resizingLanguageIcon = languageIcon.getImage();
         resizingLanguageIcon = resizingLanguageIcon.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         languageIcon = new ImageIcon(resizingLanguageIcon);
@@ -114,7 +114,7 @@ public class GuestFrame implements ActionListener, MouseListener {
         changeLanguageLabel.setHorizontalAlignment(JLabel.LEFT);
         changeLanguageLabel.setVerticalAlignment(JLabel.CENTER);
 
-        ImageIcon logoutIcon = new ImageIcon("src/Logout Logo.png");
+        ImageIcon logoutIcon = new ImageIcon("asset/Logout Logo.png");
         Image resizingLogoutIcon = logoutIcon.getImage();
         resizingLogoutIcon = resizingLogoutIcon.getScaledInstance(75, 75, Image.SCALE_SMOOTH);
         logoutIcon = new ImageIcon(resizingLogoutIcon);
@@ -188,7 +188,7 @@ public class GuestFrame implements ActionListener, MouseListener {
             cardLayout.show(overallLayer, "Search");
 
         } else if (e.getSource() == logoutLabel || e.getSource() == logoutPlaceholder) {
-            ImageIcon logoutLogo = new ImageIcon("src/Logout Logo.png");
+            ImageIcon logoutLogo = new ImageIcon("asset/Logout Logo.png");
             Image resizingLogoutLogo = logoutLogo.getImage();
             resizingLogoutLogo = resizingLogoutLogo.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             logoutLogo = new ImageIcon(resizingLogoutLogo);

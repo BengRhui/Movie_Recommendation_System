@@ -15,7 +15,7 @@ public class Recommendation {
 
     public static String getNameFromRecommendation(String movieID) {
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("src/Movies.txt"));
+            BufferedReader rd = new BufferedReader(new FileReader("textfile/Movies.txt"));
             String line;
             while ((line = rd.readLine()) != null) {
                 String[] details = line.split("§");

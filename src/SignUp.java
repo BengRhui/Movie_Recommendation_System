@@ -19,7 +19,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
     static String lastFrame;
     SignUp(double frameHorizontal, double frameVertical, String previousFrame) throws IOException {
 
-        BufferedReader rd = new BufferedReader(new FileReader("src/account.txt"));
+        BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
 
         String line;
         while ((line = rd.readLine()) != null) {
@@ -39,7 +39,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         frame.setResizable(false);
 
         JLabel background = new JLabel();
-        ImageIcon image = new ImageIcon("src/User Background.jpg");
+        ImageIcon image = new ImageIcon("asset/User Background.jpg");
         background.setIcon(image);
         background.setBounds(0, 0, 1366, 768);
 
@@ -115,7 +115,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         signUpButton.addMouseListener(this);
         signUpButton.addActionListener(this);
 
-        ImageIcon arrowImage = new ImageIcon("src/Back Arrow.png");
+        ImageIcon arrowImage = new ImageIcon("asset/Back Arrow.png");
         arrowPlaceholder = new JLabel();
         arrowPlaceholder.setBackground(Color.WHITE);
         arrowPlaceholder.setIcon(arrowImage);
@@ -123,7 +123,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         arrowPlaceholder.setOpaque(true);
         arrowPlaceholder.addMouseListener(this);
 
-        ImageIcon signUpPicture = new ImageIcon("src/Sign Up Picture.png");
+        ImageIcon signUpPicture = new ImageIcon("asset/Sign Up Picture.png");
         picturePlaceholder = new JLabel();
         picturePlaceholder.setBackground(Color.WHITE);
         picturePlaceholder.setIcon(signUpPicture);
@@ -189,7 +189,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
                 password.add(passwordText2.toString());
                 userID.add(Collections.max(userID) + 1);
 
-                try (BufferedWriter wr = new BufferedWriter(new FileWriter("src/account.txt"))) {
+                try (BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/account.txt"))) {
                     for (int i = 0; i < userID.size(); i ++) {
                         String lineToInsert = String.format("%-10s%-40s%s", (userID.get(i).toString() + ";"), (account.get(i) + ";"), password.get(i));
                         wr.write(lineToInsert);
