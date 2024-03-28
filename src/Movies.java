@@ -104,7 +104,8 @@ public class Movies {
         }
     }
 
-    static void appendMovieObject() {
+    public static void appendMovieObject() {
+        movieList.clear();
         try {
             BufferedReader readMovieTextFile = new BufferedReader(new FileReader("textfile/Movies.txt"));
             String line;

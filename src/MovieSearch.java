@@ -1,15 +1,30 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class MovieSearch extends JLayeredPane implements KeyListener {
+public class MovieSearch extends JLayeredPane implements KeyListener, MouseListener {
 
-    JLabel title, backgroundPlaceholder, searchLogoPlaceholder, promptText;
-    JPanel searchBarPlaceholder;
+    CardLayout cardLayout = new CardLayout();
+    JLabel title, backgroundPlaceholder, searchLogoPlaceholder, promptText, previous, next, label;
+    JPanel searchBarPlaceholder, container = new JPanel(cardLayout), panel;
     JTextField textField;
+    static String userID;
+    int currentDisplay = 0, numberOfPages;
 
     MovieSearch(String userID) {
+
+        MovieSearch.userID = userID;
 
         this.setSize(970, 768);
 
@@ -40,6 +55,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener {
         searchLogoPlaceholder.setHorizontalAlignment(JLabel.CENTER);
         searchLogoPlaceholder.setVerticalAlignment(JLabel.CENTER);
         this.add(searchLogoPlaceholder, JLayeredPane.MODAL_LAYER);
+        searchLogoPlaceholder.addMouseListener(this);
 
         promptText = new JLabel("Type the movie name here.");
         promptText.setFont(new Font("Avenir", Font.PLAIN, 18));
@@ -63,7 +79,10 @@ public class MovieSearch extends JLayeredPane implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            MouseEvent clickEvent = new MouseEvent(searchLogoPlaceholder, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, searchLogoPlaceholder.getWidth() / 2, searchLogoPlaceholder.getHeight() / 2, 1, false);
+            searchLogoPlaceholder.dispatchEvent(clickEvent);
+        }
     }
 
     @Override
@@ -74,7 +93,335 @@ public class MovieSearch extends JLayeredPane implements KeyListener {
             promptText.setForeground(Color.LIGHT_GRAY);
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() == searchLogoPlaceholder) {
+
+            container.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 30, 810, 450);
+
+            String search = textField.getText().strip();
+            Movies.appendMovieObject();
+            ArrayList<Movies> filteredList = new ArrayList<>();
+
+            for (Movies movie: Movies.movieList) {
+                if (movie.title.toLowerCase().contains(search.toLowerCase())) {
+                    filteredList.add(movie);
+                }
+            }
+
+            int initialSize = filteredList.size();
+
+            if (initialSize == 0) {
+
+                if (panel != null) {
+                    this.remove(container);
+                    this.remove(next);
+                    this.remove(previous);
+                    this.repaint();
+                    this.revalidate();
+                }
+
+                label = new JLabel("No results from searches. Please enter another keyword.");
+                label.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 20, 700, 50);
+                label.setFont(new Font("Avenir", Font.PLAIN, 20));
+                this.add(label, JLayeredPane.MODAL_LAYER);
+
+            } else {
+
+                if (label != null) {
+                    this.remove(label);
+                }
+
+                numberOfPages = (int) Math.ceil(initialSize / 10.0);
+
+                Iterator<Movies> iteratorList = filteredList.iterator();
+
+                JFrame popUpLoading = new JFrame("Loading");
+                popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                popUpLoading.setLayout(new FlowLayout());
+                popUpLoading.setSize(300, 50);
+                popUpLoading.setLocationRelativeTo(null);
+                popUpLoading.setVisible(true);
+
+                int pageCount = 0;
+                for (int i = 0; i < numberOfPages; i++) {
+
+                    panel = new JPanel(new GridLayout(2, 5, 10, 10));
+                    int count = 0;
+
+                    while (iteratorList.hasNext() && count < 10) {
+                        JPanel holder = new JPanel(null);
+                        holder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
+                        Movies item = iteratorList.next();
+
+                        String movieName = item.title;
+                        JLabel label = new JLabel("<html>" + movieName + "</html>");
+                        label.setBounds(10, 155, 110, 75);
+                        label.setFont(new Font("Avenir", Font.PLAIN, 14));
+                        label.setVerticalAlignment(JLabel.TOP);
+
+                        JLabel posterLabel = new JLabel();
+                        posterLabel.setBounds(2, 2, 150, 145);
+
+                        String urlText = Movies.getUrlFromMovieId(String.valueOf(item.movieIdInDataset));
+
+                        assert urlText != null;
+                        if (urlText.equals("null")) {
+                            ImageIcon image = new ImageIcon("asset/No image.png");
+                            Image imageResized = image.getImage();
+                            imageResized = imageResized.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
+                            ImageIcon posterImage = new ImageIcon(imageResized);
+                            posterLabel.setIcon(posterImage);
+                            posterLabel.addMouseListener(new MouseListener() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseReleased(MouseEvent e) {
+                                    try {
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID);
+                                        UserFrame.frame.setVisible(false);
+                                    } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
+                                    }
+                                }
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                }
+                            });
+
+                        } else {
+                            try {
+                                URL imageURL = new URI(urlText).toURL();
+                                BufferedImage image = ImageIO.read(imageURL);
+                                Image imageResize = image.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
+                                ImageIcon posterImage = new ImageIcon(imageResize);
+                                posterLabel.setIcon(posterImage);
+                                posterLabel.addMouseListener(new MouseListener() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+
+                                    }
+
+                                    @Override
+                                    public void mousePressed(MouseEvent e) {
+
+                                    }
+
+                                    @Override
+                                    public void mouseReleased(MouseEvent e) {
+                                        try {
+                                            if (userID != null) {
+                                                new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID);
+                                                UserFrame.frame.setVisible(false);
+                                            } else {
+                                                new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, null);
+                                                GuestFrame.frame.setVisible(false);
+                                            }
+                                        } catch (IOException ex) {
+                                            JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+                                        posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                    }
+
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+                                        posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                    }
+                                });
+                            } catch (URISyntaxException | IOException ex) {
+                                JOptionPane.showMessageDialog(null, "Invalid URL for movie " + item.movieIdInDataset);
+                            }
+                        }
+
+                        ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
+
+                        boolean available = false;
+
+                        for (Favourite fav : currentFav) {
+                            if (fav.movieID.equals(String.valueOf(item.movieIdInDataset))) {
+                                available = true;
+                                break;
+                            }
+                        }
+
+                        if (userID != null) {
+                            JLabel bookmarkHolder = new JLabel();
+                            bookmarkHolder.setBounds(120, 155, 43, 45);
+
+                            ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
+                            Image resizeBookmarkedImage = bookmarkedIcon.getImage();
+                            resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                            bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
+
+                            ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
+                            Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
+                            resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                            notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
+
+                            bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
+
+                            ImageIcon finalBookmarkedIcon = bookmarkedIcon;
+                            ImageIcon finalNotBookmarkedIcon = notBookmarkedIcon;
+                            bookmarkHolder.addMouseListener(new MouseListener() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    boolean isCurrentlyBookmarked = bookmarkHolder.getIcon() == finalBookmarkedIcon;
+
+                                    if (isCurrentlyBookmarked) {
+                                        Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieIdInDataset));
+                                        bookmarkHolder.setIcon(finalNotBookmarkedIcon);
+                                        JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                    } else {
+                                        Favourite.addFavouriteToList(userID, String.valueOf(item.movieIdInDataset));
+                                        bookmarkHolder.setIcon(finalBookmarkedIcon);
+                                        JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                    }
+
+                                    UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
+                                    UserFrame.overallLayer.add(new FavouriteList(userID), "Favourite");
+                                    UserFrame.overallLayer.remove(UserFrame.homeLayer);
+                                    UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
+                                }
+
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseReleased(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                }
+                            });
+                            holder.add(bookmarkHolder);
+                        }
+
+                        holder.setBackground(Color.WHITE);
+                        holder.add(label);
+                        holder.add(posterLabel);
+                        panel.add(holder);
+                        iteratorList.remove();
+                        count++;
+                    }
+
+                    panel.setVisible(true);
+                    panel.setOpaque(true);
+
+                    if (i == numberOfPages - 1) {
+                        int remaining = 0;
+                        if (initialSize % 10 != 0) {
+                            remaining = 10 - (initialSize % 10);
+                        }
+                        for (int j = 0; j < remaining; j++) {
+                            JPanel blank = new JPanel();
+                            blank.setBackground(Color.WHITE);
+                            panel.add(blank);
+                        }
+                    }
+                    container.add(panel, "card" + i);
+                    pageCount = i;
+                }
+
+                popUpLoading.dispose();
+
+                cardLayout.show(container, "card0");
+                this.add(container, JLayeredPane.MODAL_LAYER);
+
+                if (pageCount > 0) {
+                    previous = new JLabel("Previous");
+                    previous.setBounds(70, 690, 100, 30);
+                    previous.setFont(new Font("Avenir", Font.PLAIN, 18));
+                    previous.addMouseListener(this);
+                    this.add(previous, JLayeredPane.POPUP_LAYER);
+                    previous.setVisible(false);
+
+                    next = new JLabel("Next");
+                    next.setBounds(840, 690, 100, 30);
+                    next.setFont(new Font("Avenir", Font.PLAIN, 18));
+                    next.addMouseListener(this);
+                    this.add(next, JLayeredPane.POPUP_LAYER);
+                } else {
+                    if (previous != null) {
+                        this.remove(previous);
+                    }
+                    if (next != null) {
+                        this.remove(next);
+                    }
+                    this.repaint();
+                    this.revalidate();
+                }
+            }
+        }
+
+        }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getSource() == previous){
+            next.setVisible(true);
+            currentDisplay -= 1;
+            cardLayout.show(container, "card" + currentDisplay);
+            if (currentDisplay == 0) {
+                previous.setVisible(false);
+            }
+        } else if (e.getSource() == next){
+            previous.setVisible(true);
+            currentDisplay += 1;
+            cardLayout.show(container, "card" + currentDisplay);
+            if (currentDisplay == numberOfPages - 1) {
+                next.setVisible(false);
+            }
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
 }
+
+
 
 class SearchBar extends JPanel {
     public void paint(Graphics g) {
