@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class UserMainPage extends JLayeredPane implements MouseListener {
+public class FavouriteList extends JLayeredPane implements MouseListener {
 
     JPanel container;
     CardLayout cardLayout = new CardLayout();
     JLabel previous, next;
     int currentDisplay = 0, numberOfPages;
-    UserMainPage(String userID) {
+    FavouriteList(String userID) {
         this.setSize(970, 768);
 
         ImageIcon background = new ImageIcon("asset/User Background.jpg");
@@ -94,12 +94,16 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
                     String movieName = Recommendation.getNameFromRecommendation(String.valueOf(item.movieID));
                     JLabel label = new JLabel("<html>" + movieName + "</html>");
-                    label.setBounds(10, 200, 110, 75);
+                    label.setBounds(2, 190, 120, 75);
                     label.setFont(new Font("Avenir", Font.PLAIN, 16));
                     label.setVerticalAlignment(JLabel.TOP);
+                    label.setBackground(Color.GREEN);
+                    label.setOpaque(true);
 
                     JLabel posterLabel = new JLabel();
                     posterLabel.setBounds(2, 2, 160, 190);
+                    posterLabel.setBackground(Color.YELLOW);
+                    posterLabel.setOpaque(true);
 
                     String urlText = Recommendation.getURLFromRecommendation(String.valueOf(item.movieID));
 
@@ -123,22 +127,17 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
                             @Override
                             public void mouseReleased(MouseEvent e) {
-                                try {
-                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID);
-                                    UserFrame.frame.setVisible(false);
-                                } catch (IOException ex) {
-                                    JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
-                                }
+                                System.out.println(item.movieID);
                             }
 
                             @Override
                             public void mouseEntered(MouseEvent e) {
-                                posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
                             }
 
                             @Override
                             public void mouseExited(MouseEvent e) {
-                                posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
                             }
                         });
                         System.out.println("No url");
@@ -163,22 +162,17 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
-                                    try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID);
-                                        UserFrame.frame.setVisible(false);
-                                    } catch (IOException ex) {
-                                        JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
-                                    }
+                                    System.out.println(item.movieID);
                                 }
 
                                 @Override
                                 public void mouseEntered(MouseEvent e) {
-                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
                                 }
 
                                 @Override
                                 public void mouseExited(MouseEvent e) {
-                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
                                 }
                             });
                         } catch (URISyntaxException | IOException ex) {
@@ -198,78 +192,22 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                     }
 
                     JLabel bookmarkHolder = new JLabel();
-                    bookmarkHolder.setBounds(120, 200, 43, 45);
+                    bookmarkHolder.setBounds(126, 190, 43, 45);
                     ImageIcon image;
 
                     if (!available) {
                         image = new ImageIcon("asset/Bookmark_No.png");
-                        Image resizeImage = image.getImage();
-                        resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-                        image = new ImageIcon(resizeImage);
-                        bookmarkHolder.setIcon(image);
-                        bookmarkHolder.addMouseListener(new MouseListener() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mousePressed(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseReleased(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseEntered(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                            }
-
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                            }
-                        });
                     } else {
                         image = new ImageIcon("asset/Bookmark_Yes.png");
-                        Image resizeImage = image.getImage();
-                        resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
-                        image = new ImageIcon(resizeImage);
-                        bookmarkHolder.setIcon(image);
-                        bookmarkHolder.addMouseListener(new MouseListener() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mousePressed(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseReleased(MouseEvent e) {
-
-                            }
-
-                            @Override
-                            public void mouseEntered(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                            }
-
-                            @Override
-                            public void mouseExited(MouseEvent e) {
-                                bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                            }
-                        });
                     }
 
+                    Image resizeImage = image.getImage();
+                    resizeImage = resizeImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                    image = new ImageIcon(resizeImage);
 
+                    bookmarkHolder.setIcon(image);
 
-                    holder.setBackground(Color.WHITE);
+                    holder.setBackground(Color.BLUE);
                     holder.add(label);
                     holder.add(posterLabel);
                     holder.add(bookmarkHolder);

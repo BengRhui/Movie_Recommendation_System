@@ -9,11 +9,13 @@ public class UserFrame implements ActionListener, MouseListener {
     static JFrame frame;
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel, reportIssueLabel,
             reportIssuePlaceholder, changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder;
-    JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel, searchLayer, favouriteListLayer, historyLayer, overallLayer;
-    JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel, homeLayer;
+    JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel, searchLayer, historyLayer, overallLayer;
+    JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel, homeLayer, favouriteListLayer;
     Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
     CardLayout cardLayout = new CardLayout();
+
     UserFrame(String userID, double xPosition, double yPosition) {
+
         frame = new JFrame("Movie Recommendation System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1366, 768);
@@ -152,8 +154,7 @@ public class UserFrame implements ActionListener, MouseListener {
         searchLayer = new JPanel();
         searchLayer.setBackground(Color.RED);
 
-        favouriteListLayer = new JPanel();
-        favouriteListLayer.setBackground(Color.MAGENTA);
+        favouriteListLayer = new FavouriteList(userID);
 
         historyLayer = new JPanel();
         historyLayer.setBackground(Color.ORANGE);
