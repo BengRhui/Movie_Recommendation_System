@@ -9,10 +9,10 @@ public class UserFrame implements ActionListener, MouseListener {
     static JFrame frame;
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel, reportIssueLabel,
             reportIssuePlaceholder, changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder;
-    JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel, historyLayer;
+    JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel;
     static JPanel overallLayer;
-    JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel, searchLayer;
-    static JLayeredPane homeLayer, favouriteListLayer;
+    JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel;
+    static JLayeredPane homeLayer, favouriteListLayer, searchLayer, historyLayer;
     Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
     CardLayout cardLayout = new CardLayout();
 
@@ -154,12 +154,10 @@ public class UserFrame implements ActionListener, MouseListener {
         homeLayer = new UserMainPage(userID);
 
         searchLayer = new MovieSearch(userID);
-        searchLayer.setBackground(Color.RED);
 
         favouriteListLayer = new FavouriteList(userID);
 
-        historyLayer = new JPanel();
-        historyLayer.setBackground(Color.ORANGE);
+        historyLayer = new WatchHistory(userID);
 
         overallLayer = new JPanel();
         overallLayer.setLayout(cardLayout);

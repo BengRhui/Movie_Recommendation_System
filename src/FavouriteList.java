@@ -215,6 +215,8 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
                             UserFrame.overallLayer.remove(UserFrame.homeLayer);
                             UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
+                            UserFrame.overallLayer.remove(UserFrame.searchLayer);
+                            UserFrame.overallLayer.add(new MovieSearch(userID), "Search");
                         }
 
                         @Override

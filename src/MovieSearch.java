@@ -115,6 +115,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             if (initialSize == 0) {
 
                 if (panel != null) {
+                    container.removeAll();
                     this.remove(container);
                     this.remove(next);
                     this.remove(previous);
@@ -132,6 +133,9 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                 if (label != null) {
                     this.remove(label);
                 }
+
+                container.removeAll();
+                this.remove(container);
 
                 numberOfPages = (int) Math.ceil(initialSize / 10.0);
 
@@ -267,16 +271,16 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
                         if (userID != null) {
                             JLabel bookmarkHolder = new JLabel();
-                            bookmarkHolder.setBounds(120, 155, 43, 45);
+                            bookmarkHolder.setBounds(120, 155, 25, 35);
 
                             ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
                             Image resizeBookmarkedImage = bookmarkedIcon.getImage();
-                            resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                            resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
                             bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
 
                             ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
                             Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
-                            resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(35, 45, Image.SCALE_SMOOTH);
+                            resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
                             notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
 
                             bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
@@ -413,11 +417,15 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
     @Override
     public void mouseEntered(MouseEvent e) {
         searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        previous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        next.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        previous.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        next.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 }
 

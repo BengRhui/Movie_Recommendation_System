@@ -49,4 +49,15 @@ public class History {
             JOptionPane.showMessageDialog(null, "Error in writing to history.txt. Please examine content");
         }
     }
+
+    public static ArrayList<History> filterHistoryFromID(String userID) {
+        readHistoryFromFile();
+        ArrayList<History> list = new ArrayList<>();
+        for (History history: overallHistoryList) {
+            if (history.userID == Integer.parseInt(userID)) {
+                list.add(history);
+            }
+        }
+        return list;
+    }
 }

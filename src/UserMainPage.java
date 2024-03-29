@@ -227,6 +227,8 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                                 JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                             }
 
+                            UserFrame.overallLayer.remove(UserFrame.searchLayer);
+                            UserFrame.overallLayer.add(new MovieSearch(userID), "Search");
                             UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
                             UserFrame.overallLayer.add(new FavouriteList(userID), "Favourite");
                         }
