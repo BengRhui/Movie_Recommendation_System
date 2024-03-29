@@ -55,7 +55,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         shadow.setBounds(50, 30, 1266, 668);
 
         frameTitle = new JLabel(title);
-        frameTitle.setBounds(200, 75, 800, 100);
+        frameTitle.setBounds(200, 75, 900, 100);
         frameTitle.setFont(new Font("Advent Pro", Font.BOLD, 60));
 
 
@@ -221,6 +221,8 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
     public void mouseReleased(MouseEvent e) {
         if (e.getSource() == arrowPlaceholder) {
             if (userID != null) {
+                UserFrame.overallLayer.remove(UserFrame.historyLayer);
+                UserFrame.overallLayer.add(new WatchHistory(userID), "History");
                 UserFrame.frame.setLocation(frame.getX(), frame.getY());
                 UserFrame.frame.setVisible(true);
             } else {

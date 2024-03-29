@@ -13,6 +13,10 @@ public class History {
 
     static ArrayList<History> overallHistoryList = new ArrayList<>();
 
+    public Instant getTime() {
+        return time;
+    }
+
     public History(int userID, int movieID, Instant time) {
         this.userID = userID;
         this.movieID = movieID;

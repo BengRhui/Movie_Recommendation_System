@@ -110,12 +110,14 @@ public class UserFrame implements ActionListener, MouseListener {
         reportIssuePlaceholder.setBounds(30, 490, 100, 70);
         reportIssuePlaceholder.setVerticalAlignment(JLabel.CENTER);
         reportIssuePlaceholder.setHorizontalAlignment(JLabel.CENTER);
+        reportIssuePlaceholder.addMouseListener(this);
 
         reportIssueLabel = new JLabel("Report Issue");
         reportIssueLabel.setBounds(130, 490, 250, 70);
         reportIssueLabel.setFont(new Font("Avenir", Font.PLAIN, 25));
         reportIssueLabel.setHorizontalAlignment(JLabel.LEFT);
         reportIssueLabel.setVerticalAlignment(JLabel.CENTER);
+        reportIssueLabel.addMouseListener(this);
 
         ImageIcon languageIcon = new ImageIcon("asset/Language Icon.png");
         Image resizingLanguageIcon = languageIcon.getImage();
@@ -126,12 +128,14 @@ public class UserFrame implements ActionListener, MouseListener {
         changeLanguagePlaceholder.setBounds(30, 575, 100, 50);
         changeLanguagePlaceholder.setHorizontalAlignment(JLabel.CENTER);
         changeLanguagePlaceholder.setVerticalAlignment(JLabel.CENTER);
+        changeLanguagePlaceholder.addMouseListener(this);
 
         changeLanguageLabel = new JLabel("Change Language");
         changeLanguageLabel.setBounds(130, 575, 250, 50);
         changeLanguageLabel.setFont(new Font("Avenir", Font.PLAIN, 25));
         changeLanguageLabel.setHorizontalAlignment(JLabel.LEFT);
         changeLanguageLabel.setVerticalAlignment(JLabel.CENTER);
+        changeLanguageLabel.addMouseListener(this);
 
         ImageIcon logoutIcon = new ImageIcon("asset/Logout Logo.png");
         Image resizingLogoutIcon = logoutIcon.getImage();
@@ -246,6 +250,24 @@ public class UserFrame implements ActionListener, MouseListener {
                     JOptionPane.showMessageDialog(null, "System error. Please inspect the system.");
                 }
             }
+        } else if (e.getSource() == reportIssueLabel || e.getSource() == reportIssuePlaceholder) {
+            new ProvideRatingPage();
+            frame.setEnabled(false);
+
+        } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            String[] language = {"English", "Malay"};
+            String s = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Choose the preferred language:",
+                    "Select Language",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    language,
+                    "Option 1");
+
+            if ((s != null) && (!s.isEmpty())) {
+                System.out.println("You selected: " + s);
+            }
         }
     }
 
@@ -271,6 +293,13 @@ public class UserFrame implements ActionListener, MouseListener {
             logoutPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             logoutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        } else if (e.getSource() == reportIssueLabel || e.getSource() == reportIssuePlaceholder) {
+            reportIssueLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            reportIssuePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            changeLanguageLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            changeLanguagePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
 
@@ -295,6 +324,17 @@ public class UserFrame implements ActionListener, MouseListener {
             watchHistoryLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             watchHistoryPanel.setBackground(Color.WHITE);
         }
+
+        if (e.getSource() == reportIssueLabel || e.getSource() == reportIssuePlaceholder) {
+            reportIssueLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            reportIssuePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+
+        if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            changeLanguageLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            changeLanguagePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+
 
         logoutPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         logoutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

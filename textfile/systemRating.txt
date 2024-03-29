@@ -1,0 +1,5 @@
+1711701624;5;Good system. Everything works as intended without error. Interesting recommendations provided by the system.
+1711705224;2;Not a very informative system. All the movie recommendations provided are not up-to-date.
+1711712424;4;Quite a good system, but the system can involve more functionalities so that we can interact more with the system.
+1711727426;4;Good system.
+1711728516;5;Excellent system! The design is simple and nice, with all the necessary functions available! Well done to the team.
