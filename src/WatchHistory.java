@@ -9,6 +9,8 @@ import java.util.*;
 
 public class WatchHistory extends JLayeredPane {
 
+    static JLabel title;
+
     WatchHistory(String userID) {
 
         this.setSize(970, 768);
@@ -19,7 +21,7 @@ public class WatchHistory extends JLayeredPane {
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        JLabel title = new JLabel("Movies watched previously:");
+        title = new JLabel("Movies watched previously:");
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
@@ -101,5 +103,13 @@ public class WatchHistory extends JLayeredPane {
         }
 
         this.add(panel, JLayeredPane.PALETTE_LAYER);
+    }
+
+    public static void changeLanguage(String language) {
+        if (language.equals("English")) {
+            title.setText("Movies watched previously:");
+        } else if (language.equals("Malay")) {
+            title.setText("Filem yang ditonton sebelum ini:");
+        }
     }
 }

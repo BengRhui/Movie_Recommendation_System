@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 
 public class GuestFrame implements ActionListener, MouseListener {
     static JFrame frame;
+    static String currentLanguage = "English";
     Color ownGray = new Color(242, 242, 242);
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel,
             changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder;
@@ -107,12 +108,14 @@ public class GuestFrame implements ActionListener, MouseListener {
         changeLanguagePlaceholder.setBounds(30, 575, 100, 50);
         changeLanguagePlaceholder.setHorizontalAlignment(JLabel.CENTER);
         changeLanguagePlaceholder.setVerticalAlignment(JLabel.CENTER);
+        changeLanguagePlaceholder.addMouseListener(this);
 
         changeLanguageLabel = new JLabel("Change Language");
         changeLanguageLabel.setBounds(130, 575, 250, 50);
         changeLanguageLabel.setFont(new Font("Avenir", Font.PLAIN, 25));
         changeLanguageLabel.setHorizontalAlignment(JLabel.LEFT);
         changeLanguageLabel.setVerticalAlignment(JLabel.CENTER);
+        changeLanguageLabel.addMouseListener(this);
 
         ImageIcon logoutIcon = new ImageIcon("asset/Logout Logo.png");
         Image resizingLogoutIcon = logoutIcon.getImage();
@@ -160,6 +163,27 @@ public class GuestFrame implements ActionListener, MouseListener {
         frame.setVisible(true);
     }
 
+    public void changeLanguage(String language) {
+        if (language.equals("English")) {
+            frame.setTitle("Movie Recommendation System");
+            homePageLabel.setText("Home Page");
+            movieSearchLabel.setText("Movie Search");
+            favouriteListLabel.setText("Favourite List");
+            watchHistoryLabel.setText("Watch History");
+            changeLanguageLabel.setText("Change Language");
+            logoutLabel.setText("Logout");
+        } else if (language.equals("Malay")) {
+            frame.setTitle("Sistem Cadangan Filem");
+            homePageLabel.setText("Menu Utama");
+            movieSearchLabel.setText("Carian Filem");
+            favouriteListLabel.setText("Senarai Kegemaran");
+            watchHistoryLabel.setText("Sejarah Menonton");
+            changeLanguageLabel.setText("Tukar Bahasa");
+            logoutLabel.setText("Log Keluar");
+        }
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -201,6 +225,42 @@ public class GuestFrame implements ActionListener, MouseListener {
                     JOptionPane.showMessageDialog(null, "System error. Please inspect the system.");
                 }
             }
+        } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            String[] language = {"English", "Malay"};
+            String languageChoice = currentLanguage;
+            if (currentLanguage.equals("English")) {
+                languageChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Choose the preferred language:",
+                        "Select Language",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        language,
+                        currentLanguage);
+            } else if (currentLanguage.equals("Malay")) {
+                languageChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Pilih bahasa pilihan anda:",
+                        "Pilih Bahasa",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        language,
+                        currentLanguage);
+            }
+
+            if ((languageChoice != null) && (!languageChoice.isEmpty())) {
+                changeLanguage(languageChoice);
+                GuestMainPage.changeLanguage(languageChoice);
+                MovieSearch.changeLanguage(languageChoice);
+
+                if (languageChoice.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Language changed successfully.", "Language Change", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                } else if (languageChoice.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Bahasa berjaya ditukar.", "Pilihan Bahasa", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                }
+
+                currentLanguage = languageChoice;
+            }
         }
     }
 
@@ -217,6 +277,10 @@ public class GuestFrame implements ActionListener, MouseListener {
         } else if (e.getSource() == logoutPlaceholder || e.getSource() == logoutLabel) {
             logoutPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             logoutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            changeLanguageLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            changeLanguagePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
 
@@ -230,6 +294,11 @@ public class GuestFrame implements ActionListener, MouseListener {
         if (movieSearchPanel.getBackground() == brighterSideBarColour) {
             movieSearchLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             movieSearchPanel.setBackground(Color.WHITE);
+        }
+
+        if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
+            changeLanguageLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            changeLanguagePlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
         logoutPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

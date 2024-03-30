@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class GuestMainPage extends JLayeredPane implements MouseListener {
-    JLabel promptSignUp;
+    static JLabel title, promptSignUp, guestMessage;
     GuestMainPage() {
 
         this.setSize(970, 768);
@@ -15,7 +15,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         backgroundPlaceholder.setIcon(background);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        JLabel title = new JLabel("Sign up now to unlock all features of our system!");
+        title = new JLabel("Sign up now to unlock all features of our system!");
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
@@ -38,7 +38,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         bottomLayer.add(new GuestTextBox());
         textBox.add(bottomLayer, DEFAULT_LAYER);
 
-        JLabel guestMessage = new JLabel("<html>You can still try out our<br>movie search feature here.</html>");
+        guestMessage = new JLabel("<html>You can still try out our<br>movie search feature here.</html>");
         guestMessage.setFont(new Font("Avenir", Font.PLAIN, 20));
         guestMessage.setBounds(30, 0, 300, 100);
         textBox.add(guestMessage, PALETTE_LAYER);
@@ -64,6 +64,18 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         decoratePlaceholder.setBounds(40, 270, 930, 500);
         this.add(decoratePlaceholder, JLayeredPane.PALETTE_LAYER);
 
+    }
+
+    public static void changeLanguage(String language) {
+        if (language.equals("English")) {
+            title.setText("Sign up now to unlock all features of our system!");
+            promptSignUp.setText("<html>Click <u>here</u> to sign up now.</html>");
+            guestMessage.setText("<html>You can still try out our<br>movie search feature here.</html>");
+        } else if (language.equals("Malay")) {
+            title.setText("Daftar sekarang untuk membuka kunci semua ciri sistem kami!");
+            promptSignUp.setText("<html>Click <u>here</u> to sign up now.</html>");
+            guestMessage.setText("<html>You can still try out our<br>movie search feature here.</html>");
+        }
     }
 
     @Override

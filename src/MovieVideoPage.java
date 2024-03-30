@@ -16,10 +16,17 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
     JPanel holder, shadow, playPanel;
     JLabel frameTitle, arrowPlaceholder, playPlaceholder;
     JButton rateButton;
-    static String URL, userID;
+    static String URL, userID, currentLanguage;
     static int movieID;
 
+
     MovieVideoPage(double frameHorizontal, double frameVertical, int movieID, String userID) throws IOException {
+
+        if (UserFrame.frame != null) {
+            currentLanguage = UserFrame.currentLanguage;
+        } else if (GuestFrame.frame != null) {
+            //currentLanguage = GuestFrame.currentLanguage;
+        }
 
         MovieVideoPage.userID = userID;
         MovieVideoPage.movieID = movieID;

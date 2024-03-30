@@ -15,6 +15,7 @@ public class UserFrame implements ActionListener, MouseListener {
     static JLayeredPane homeLayer, favouriteListLayer, searchLayer, historyLayer;
     Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
     CardLayout cardLayout = new CardLayout();
+    static String currentLanguage = "English";
 
     UserFrame(String userID, double xPosition, double yPosition) {
 
@@ -191,6 +192,28 @@ public class UserFrame implements ActionListener, MouseListener {
         frame.setVisible(true);
     }
 
+    void changeLanguage(String language) {
+        if (language.equals("English")) {
+            frame.setTitle("Movie Recommendation System");
+            homePageLabel.setText("Home Page");
+            movieSearchLabel.setText("Movie Search");
+            favouriteListLabel.setText("Favourite List");
+            watchHistoryLabel.setText("Watch History");
+            reportIssueLabel.setText("Report Issue");
+            changeLanguageLabel.setText("Change Language");
+            logoutLabel.setText("Logout");
+        } else if (language.equals("Malay")) {
+            frame.setTitle("Sistem Cadangan Filem");
+            homePageLabel.setText("Menu Utama");
+            movieSearchLabel.setText("Carian Filem");
+            favouriteListLabel.setText("Senarai Kegemaran");
+            watchHistoryLabel.setText("Sejarah Menonton");
+            reportIssueLabel.setText("Laporkan Isu");
+            changeLanguageLabel.setText("Tukar Bahasa");
+            logoutLabel.setText("Log Keluar");
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -256,17 +279,41 @@ public class UserFrame implements ActionListener, MouseListener {
 
         } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
             String[] language = {"English", "Malay"};
-            String s = (String) JOptionPane.showInputDialog(
-                    null,
-                    "Choose the preferred language:",
-                    "Select Language",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    language,
-                    "Option 1");
+            String languageChoice = currentLanguage;
+            if (currentLanguage.equals("English")) {
+                languageChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Choose the preferred language:",
+                        "Select Language",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        language,
+                        currentLanguage);
+            } else if (currentLanguage.equals("Malay")) {
+                languageChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Pilih bahasa pilihan anda:",
+                        "Pilih Bahasa",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        language,
+                        currentLanguage);
+            }
 
-            if ((s != null) && (!s.isEmpty())) {
-                System.out.println("You selected: " + s);
+            if ((languageChoice != null) && (!languageChoice.isEmpty())) {
+                changeLanguage(languageChoice);
+                UserMainPage.changeLanguage(languageChoice);
+                MovieSearch.changeLanguage(languageChoice);
+                FavouriteList.changeLanguage(languageChoice);
+                WatchHistory.changeLanguage(languageChoice);
+
+                if (languageChoice.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Language changed successfully.", "Language Change", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                } else if (languageChoice.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Bahasa berjaya ditukar.", "Pilihan Bahasa", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                }
+
+                currentLanguage = languageChoice;
             }
         }
     }

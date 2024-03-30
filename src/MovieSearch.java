@@ -16,7 +16,8 @@ import java.util.Iterator;
 public class MovieSearch extends JLayeredPane implements KeyListener, MouseListener {
 
     CardLayout cardLayout = new CardLayout();
-    JLabel title, backgroundPlaceholder, searchLogoPlaceholder, promptText, previous, next, label;
+    JLabel backgroundPlaceholder, searchLogoPlaceholder, previous, next, label;
+    static JLabel title, promptText;
     JPanel searchBarPlaceholder, container = new JPanel(cardLayout), panel;
     JTextField textField;
     static String userID;
@@ -388,7 +389,17 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             }
         }
 
+    }
+
+    public static void changeLanguage(String language) {
+        if (language.equals("English")) {
+            title.setText("Search for movies here:");
+            promptText.setText("Type the movie name here.");
+        } else if (language.equals("Malay")) {
+            title.setText("Cari filem di sini:");
+            promptText.setText("Masukkan nama filem di sini.");
         }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
