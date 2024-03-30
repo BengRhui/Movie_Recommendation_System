@@ -10,8 +10,11 @@ import java.util.*;
 public class WatchHistory extends JLayeredPane {
 
     static JLabel title;
+    static String currentLanguage;
 
     WatchHistory(String userID) {
+
+        currentLanguage = UserFrame.currentLanguage;
 
         this.setSize(970, 768);
 
@@ -100,6 +103,12 @@ public class WatchHistory extends JLayeredPane {
             } else {
                 recordCount++;
             }
+        }
+
+        if (currentLanguage.equals("English")) {
+            title.setText("Movies watched previously:");
+        } else if (currentLanguage.equals("Malay")) {
+            title.setText("Filem yang ditonton sebelum ini:");
         }
 
         this.add(panel, JLayeredPane.PALETTE_LAYER);

@@ -12,11 +12,15 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
     ButtonGroup group;
     JPanel buttonPanel, background;
     JButton cancelButton, saveButton;
+    static String currentLanguage;
 
     public ProvideRatingPage() {
+
+        currentLanguage = UserFrame.currentLanguage;
+
         frame = new JFrame("Provide Ratings");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(750, 600);
+        frame.setSize(750, 620);
         frame.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - frame.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - frame.getHeight()) / 2);
         frame.setLayout(null);
         frame.setResizable(false);
@@ -36,7 +40,7 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
 
         scalePrompt = new JLabel("Overall rating for our system: ");
         scalePrompt.setFont(new Font("Avenir", Font.PLAIN, 20));
-        scalePrompt.setBounds(subtitle.getX(), subtitle.getY() + subtitle.getHeight() + 20, 300, 50);
+        scalePrompt.setBounds(subtitle.getX(), subtitle.getY() + subtitle.getHeight() + 20, 350, 50);
 
         button1 = new JRadioButton("1");
         button1.setFont(new Font("Avenir", Font.PLAIN, 20));
@@ -109,6 +113,24 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
         saveButton.addActionListener(this);
         saveButton.addMouseListener(this);
 
+        if (currentLanguage.equals("English")) {
+            frame.setTitle("Provide Ratings");
+            title.setText("Feedback");
+            subtitle.setText("<html>We would like to hear from you.<br>Please assist us by filling in the following information.</html>");
+            scalePrompt.setText("Overall rating for our system: ");
+            feedbackPrompt.setText("Feedbacks / Comments of the system: ");
+            cancelButton.setText("Cancel");
+            saveButton.setText("Save");
+        } else if (currentLanguage.equals("Malay")) {
+            frame.setTitle("Halaman Penilaian");
+            title.setText("Penilaian");
+            subtitle.setText("<html>Kami ingin mengetahui pandangan anda.<br>Sila mengisikan semua butiran di bawah.</html>");
+            scalePrompt.setText("Penilaian keseluruhan untuk sistem: ");
+            feedbackPrompt.setText("Pandangan terhadap sistem: ");
+            cancelButton.setText("Batal");
+            saveButton.setText("Simpan");
+        }
+
         frame.add(cancelButton);
         frame.add(saveButton);
         frame.add(title);
@@ -126,8 +148,8 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == saveButton) {
 
+            int systemRating;
             try {
-                int systemRating;
                 if (button1.isSelected()) {
                     systemRating = 1;
                 } else if (button2.isSelected()) {
@@ -145,12 +167,21 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
                 SystemRating rating = new SystemRating(Instant.now(), String.valueOf(systemRating), feedbackInput.getText());
                 SystemRating.addSystemRatings(rating);
 
-                JOptionPane.showMessageDialog(frame, "Successful submission. Hope you have a great experience using our system.", "Submission Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Successful submission. Hope you have a great experience using our system.", "Submission Success", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Berjaya dihantar. Semoga anda menikmati sistem kami.", "Berjaya Dihantar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+                }
                 frame.dispose();
                 UserFrame.frame.setEnabled(true);
 
             } catch (NullPointerException ex) {
-                JOptionPane.showMessageDialog(frame, "Invalid choice / feedback. Please try again.", "Invalid input", JOptionPane.ERROR_MESSAGE);
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Invalid choice / feedback. Please try again.", "Invalid input", JOptionPane.ERROR_MESSAGE);
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Pilihan / Komen yang tidak lengkap. Sila cuba lagi.", "Penilaian Tidak Sah", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else if (e.getSource() == cancelButton) {
             frame.dispose();

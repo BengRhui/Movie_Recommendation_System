@@ -21,10 +21,13 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
     JPanel container;
     CardLayout cardLayout = new CardLayout();
-    JLabel previous, next;
-    static JLabel title;
+    static JLabel title, previous, next;
     int currentDisplay = 0, numberOfPages;
+    static String currentLanguage = "English";
     FavouriteList(String userID) {
+
+        currentLanguage = UserFrame.currentLanguage;
+
         this.setSize(970, 768);
 
         ImageIcon background = new ImageIcon("asset/User Background.jpg");
@@ -71,6 +74,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
             int pageCount = 0;
             for (int i = 0; i < numberOfPages; i++) {
                 JPanel panel = new JPanel(new GridLayout(2, 5, 10, 10));
+                panel.setBackground(new Color(255, 255, 255, 0));
                 int count = 0;
 
                 while (iteratorList.hasNext() && count < 10) {
@@ -172,17 +176,6 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                         }
                     }
 
-                    ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
-
-                    boolean available = false;
-
-                    for (Favourite fav: currentFav) {
-                        if (fav.movieID.equals(String.valueOf(item.movieID))) {
-                            available = true;
-                            break;
-                        }
-                    }
-
                     JLabel removeHolder = new JLabel();
                     removeHolder.setBounds(120, 200, 43, 45);
 
@@ -207,17 +200,22 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                         @Override
                         public void mouseReleased(MouseEvent e) {
                             Favourite.removeFavouriteFromList(userID, item.movieID);
-                            panel.remove(holder);
-                            JPanel blank = new JPanel();
-                            blank.setBackground(Color.WHITE);
-                            panel.add(blank);
-                            container.revalidate();
-                            container.repaint();
 
                             UserFrame.overallLayer.remove(UserFrame.homeLayer);
                             UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
                             UserFrame.overallLayer.remove(UserFrame.searchLayer);
                             UserFrame.overallLayer.add(new MovieSearch(userID), "Search");
+                            UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
+                            UserFrame.favouriteListLayer = new FavouriteList(userID);
+                            UserFrame.overallLayer.add(UserFrame.favouriteListLayer, "Favourite");
+
+                            UserFrame.favouriteListLayer.repaint();
+                            UserFrame.favouriteListLayer.revalidate();
+
+                            UserFrame.cardLayout.show(UserFrame.overallLayer, "Favourite");
+
+                            container.revalidate();
+                            container.repaint();
                         }
 
                         @Override
@@ -250,7 +248,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                     }
                     for (int j = 0; j < remaining; j++) {
                         JPanel blank = new JPanel();
-                        blank.setBackground(Color.WHITE);
+                        blank.setBackground(new Color(255, 255,255, 0));
                         panel.add(blank);
                     }
                 }
@@ -266,16 +264,38 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
             if (pageCount > 0) {
                 previous = new JLabel("Previous");
-                previous.setBounds(20, 700, 100, 50);
+                previous.setBounds(50, 700, 100, 30);
+                previous.setFont(new Font("Avenir", Font.PLAIN, 18));
                 previous.addMouseListener(this);
                 this.add(previous, JLayeredPane.PALETTE_LAYER);
                 previous.setVisible(false);
 
                 next = new JLabel("Next");
-                next.setBounds(400, 700, 100, 50);
+                next.setBounds(810, 700, 100, 30);
+                next.setFont(new Font("Avenir", Font.PLAIN, 18));
+                next.setHorizontalAlignment(JLabel.RIGHT);
                 next.addMouseListener(this);
                 this.add(next, JLayeredPane.PALETTE_LAYER);
             }
+
+            if (currentLanguage.equals("English")) {
+                title.setText("Your favourite movie list:");
+                if (previous != null) {
+                    previous.setText("Previous");
+                }
+                if (next != null) {
+                    next.setText("Next");
+                }
+            } else if (currentLanguage.equals("Malay")) {
+                title.setText("Senarai filem kegemaran anda:");
+                if (previous != null) {
+                    previous.setText("Sebelumnya");
+                }
+                if (next != null) {
+                    next.setText("Selepasnya");
+                }
+            }
+
         }
 
 
@@ -284,8 +304,22 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
             title.setText("Your favourite movie list:");
+            if (previous != null) {
+                previous.setText("Previous");
+            }
+            if (next != null) {
+                next.setText("Next");
+            }
+            currentLanguage = "English";
         } else if (language.equals("Malay")) {
             title.setText("Senarai filem kegemaran anda:");
+            if (previous != null) {
+                previous.setText("Sebelumnya");
+            }
+            if (next != null) {
+                next.setText("Selepasnya");
+            }
+            currentLanguage = "Malay";
         }
     }
 

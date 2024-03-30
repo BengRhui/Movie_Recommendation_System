@@ -16,14 +16,20 @@ import java.util.Iterator;
 public class MovieSearch extends JLayeredPane implements KeyListener, MouseListener {
 
     CardLayout cardLayout = new CardLayout();
-    JLabel backgroundPlaceholder, searchLogoPlaceholder, previous, next, label;
-    static JLabel title, promptText;
+    JLabel backgroundPlaceholder, searchLogoPlaceholder, label;
+    static JLabel title, promptText, previous, next;
     JPanel searchBarPlaceholder, container = new JPanel(cardLayout), panel;
     JTextField textField;
-    static String userID;
+    static String userID, currentLanguage = "English";
     int currentDisplay = 0, numberOfPages;
 
     MovieSearch(String userID) {
+
+        if (UserFrame.frame != null) {
+            currentLanguage = UserFrame.currentLanguage;
+        } else if (GuestFrame.frame != null) {
+            currentLanguage = GuestFrame.currentLanguage;
+        }
 
         MovieSearch.userID = userID;
 
@@ -71,6 +77,14 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
         textField.setBorder(null);
         this.add(textField, JLayeredPane.POPUP_LAYER);
         textField.addKeyListener(this);
+
+        if (currentLanguage.equals("English")) {
+            title.setText("Search for movies here:");
+            promptText.setText("Type the movie name here.");
+        } else if (currentLanguage.equals("Malay")) {
+            title.setText("Cari filem di sini:");
+            promptText.setText("Masukkan nama filem di sini.");
+        }
     }
 
     @Override
@@ -153,6 +167,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                 for (int i = 0; i < numberOfPages; i++) {
 
                     panel = new JPanel(new GridLayout(2, 5, 10, 10));
+                    panel.setBackground(new Color(255, 255, 255, 0));
                     int count = 0;
 
                     while (iteratorList.hasNext() && count < 10) {
@@ -296,11 +311,22 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                                     if (isCurrentlyBookmarked) {
                                         Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieIdInDataset));
                                         bookmarkHolder.setIcon(finalNotBookmarkedIcon);
-                                        JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                        if (currentLanguage.equals("English")) {
+                                            JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                        } else if (currentLanguage.equals("Malay")) {
+                                            JOptionPane.showMessageDialog(null, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+                                        }
+
                                     } else {
                                         Favourite.addFavouriteToList(userID, String.valueOf(item.movieIdInDataset));
                                         bookmarkHolder.setIcon(finalBookmarkedIcon);
-                                        JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                        if (currentLanguage.equals("English")) {
+                                            JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                        } else if (currentLanguage.equals("Malay")) {
+                                            JOptionPane.showMessageDialog(null, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+                                        }
                                     }
 
                                     UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
@@ -350,7 +376,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                         }
                         for (int j = 0; j < remaining; j++) {
                             JPanel blank = new JPanel();
-                            blank.setBackground(Color.WHITE);
+                            blank.setBackground(new Color(255, 255, 255, 0));
                             panel.add(blank);
                         }
                     }
@@ -372,10 +398,20 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                     previous.setVisible(false);
 
                     next = new JLabel("Next");
-                    next.setBounds(840, 690, 100, 30);
+                    next.setBounds(780, 690, 100, 30);
+                    next.setHorizontalAlignment(JLabel.RIGHT);
                     next.setFont(new Font("Avenir", Font.PLAIN, 18));
                     next.addMouseListener(this);
                     this.add(next, JLayeredPane.POPUP_LAYER);
+
+                    if (currentLanguage.equals("English")) {
+                        previous.setText("Previous");
+                        next.setText("Next");
+                    } else if (currentLanguage.equals("Malay")) {
+                        previous.setText("Sebelumnya");
+                        next.setText("Selepasnya");
+                    }
+
                 } else {
                     if (previous != null) {
                         this.remove(previous);
@@ -395,9 +431,24 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
         if (language.equals("English")) {
             title.setText("Search for movies here:");
             promptText.setText("Type the movie name here.");
+            if (previous != null) {
+                previous.setText("Previous");
+            }
+            if (next != null) {
+                next.setText("Next");
+            }
+            currentLanguage = "English";
+
         } else if (language.equals("Malay")) {
             title.setText("Cari filem di sini:");
             promptText.setText("Masukkan nama filem di sini.");
+            if (previous != null) {
+                previous.setText("Sebelumnya");
+            }
+            if (next != null) {
+                next.setText("Selepasnya");
+            }
+            currentLanguage = "Malay";
         }
     }
 

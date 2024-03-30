@@ -8,7 +8,7 @@ import java.util.Collections;
 public class SignUp implements ActionListener, MouseListener, KeyListener  {
     JFrame frame;
     JPanel holder, shadow, emailPanel, passwordPanel;
-    JLabel signUp, emailPlaceholder, passwordPlaceholder, arrowPlaceholder, picturePlaceholder;
+    JLabel signUp, emailPlaceholder, passwordPlaceholder, arrowPlaceholder, picturePlaceholder, emailLabel, passwordLabel;
     JTextField emailInput;
     JPasswordField passwordInput;
     JButton signUpButton;
@@ -16,8 +16,12 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
     ArrayList<String> account = new ArrayList<>();
     ArrayList<String> password = new ArrayList<>();
     ArrayList<Integer> userID = new ArrayList<>();
-    static String lastFrame;
+    static String lastFrame, currentLanguage = "English";
     SignUp(double frameHorizontal, double frameVertical, String previousFrame) throws IOException {
+
+        if (GuestFrame.frame != null) {
+            currentLanguage = GuestFrame.currentLanguage;
+        }
 
         BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
 
@@ -52,10 +56,10 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         shadow.setBounds(50, 30, 1266, 668);
 
         signUp = new JLabel("Sign Up");
-        signUp.setBounds(200, 75, 200, 100);
+        signUp.setBounds(200, 75, 300, 100);
         signUp.setFont(new Font("Advent Pro", Font.BOLD, 60));
 
-        JLabel emailLabel = new JLabel("Email");
+        emailLabel = new JLabel("Email");
         emailLabel.setBounds(200, 190, 450, 50);
         emailLabel.setFont(new Font("Avenir", Font.PLAIN, 30));
         emailLabel.setHorizontalAlignment(JLabel.LEFT);
@@ -80,7 +84,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         emailPlaceholder.setForeground(Color.GRAY);
         emailPlaceholder.setBounds(225, 260, 450, 60);
 
-        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel = new JLabel("Password");
         passwordLabel.setBounds(200, 340, 450, 80);
         passwordLabel.setFont(new Font("Avenir", Font.PLAIN, 30));
         passwordLabel.setHorizontalAlignment(JLabel.LEFT);
@@ -130,6 +134,24 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
         picturePlaceholder.setBounds(710, 80, 600, 600);
         picturePlaceholder.setOpaque(true);
 
+        if (currentLanguage.equals("English")) {
+            frame.setTitle("Movie Recommendation System");
+            signUp.setText("Sign Up");
+            emailLabel.setText("Email");
+            emailPlaceholder.setText("Example: abc123@mail.com");
+            passwordLabel.setText("Password");
+            passwordPlaceholder.setText("Password must be between 4 to 20 characters.");
+            signUpButton.setText("Sign Up");
+        } else if (currentLanguage.equals("Malay")) {
+            frame.setTitle("Sistem Cadangan Filem");
+            signUp.setText("Daftar Akaun");
+            emailLabel.setText("Emel");
+            emailPlaceholder.setText("Contoh: abc123@mail.com");
+            passwordLabel.setText("Kata Laluan");
+            passwordPlaceholder.setText("Kata laluan harus mempunyai 4 hingga 20 aksara.");
+            signUpButton.setText("Daftar");
+        }
+
         frame.add(arrowPlaceholder);
         frame.add(picturePlaceholder);
         frame.add(emailLabel);
@@ -163,18 +185,34 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
             }
             if (emailInput.getText().isEmpty() || passwordText.isEmpty()) {
                 validation = false;
-                JOptionPane.showMessageDialog(frame, "Please fill in your email and password to proceed.", "Note", JOptionPane.ERROR_MESSAGE);
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Please fill in your email and password to proceed.", "Note", JOptionPane.ERROR_MESSAGE);
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Sila isikan emel dan kata laluan untuk meneruskan proses.", "Nota", JOptionPane.ERROR_MESSAGE);
+                }
             } else if (!emailInput.getText().contains("@") || !emailInput.getText().contains(".")) {
                 validation = false;
-                JOptionPane.showMessageDialog(frame, "Please provide a valid email address.", "Note", JOptionPane.ERROR_MESSAGE);
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Please provide a valid email address.", "Note", JOptionPane.ERROR_MESSAGE);
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Sila isikan emel yang sah.", "Nota", JOptionPane.ERROR_MESSAGE);
+                }
             } else if ((passwordText.toString().length() < 4) || (passwordText.toString().length() > 20)) {
                 validation = false;
-                JOptionPane.showMessageDialog(frame, "Invalid password. Please try another password.", "Note", JOptionPane.ERROR_MESSAGE);
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "Invalid password. Please try another password.", "Note", JOptionPane.ERROR_MESSAGE);
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Kata laluan tidak sah. Sila cuba lagi.", "Nota", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
                 for (String x : account) {
                     if (x.equals(emailInput.getText())) {
                         validation = false;
-                        JOptionPane.showMessageDialog(frame, "The email has already been used. Please use another email.", "Note", JOptionPane.ERROR_MESSAGE);
+                        if (currentLanguage.equals("English")) {
+                            JOptionPane.showMessageDialog(frame, "The email has already been used. Please use another email.", "Note", JOptionPane.ERROR_MESSAGE);
+                        } else if (currentLanguage.equals("Malay")) {
+                            JOptionPane.showMessageDialog(frame, "Emel telah diguna. Sila gunakan emel yang lain.", "Nota", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
             }
@@ -198,8 +236,11 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(frame, "The file cannot be retrieved. Please inspect for any mistakes.");
                 }
-
-                JOptionPane.showMessageDialog(frame, "You have successfully registered to our system. You will be redirected to the login page.", "Note", JOptionPane.INFORMATION_MESSAGE);
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(frame, "You have successfully registered to our system. You will be redirected to the login page.", "Note", JOptionPane.INFORMATION_MESSAGE);
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(frame, "Anda telah berjaya didaftarkan ke sistem. Anda akan dipautkan ke halaman log masuk.", "Nota", JOptionPane.INFORMATION_MESSAGE);
+                }
                 try {
                     new Login(frame.getX(), frame.getY());
                     frame.dispose();

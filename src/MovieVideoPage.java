@@ -14,7 +14,7 @@ import java.util.Collections;
 public class MovieVideoPage implements ActionListener, MouseListener, KeyListener  {
     JFrame frame;
     JPanel holder, shadow, playPanel;
-    JLabel frameTitle, arrowPlaceholder, playPlaceholder;
+    JLabel frameTitle, arrowPlaceholder, playPlaceholder, playPrompt, synopsisTitle, favouritesPrompt;
     JButton rateButton;
     static String URL, userID, currentLanguage;
     static int movieID;
@@ -25,8 +25,9 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         if (UserFrame.frame != null) {
             currentLanguage = UserFrame.currentLanguage;
         } else if (GuestFrame.frame != null) {
-            //currentLanguage = GuestFrame.currentLanguage;
+            currentLanguage = GuestFrame.currentLanguage;
         }
+
 
         MovieVideoPage.userID = userID;
         MovieVideoPage.movieID = movieID;
@@ -84,11 +85,11 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         playPlaceholder.setBounds(180, 180, 75, 75);
         playPlaceholder.setIcon(imageIcon);
 
-        JLabel playPrompt = new JLabel("Click me to play video:");
+        playPrompt = new JLabel("Click me to play video:");
         playPrompt.setFont(new Font("Avenir", Font.PLAIN, 20));
         playPrompt.setBounds(50, 120, 330, 50);
 
-        JLabel synopsisTitle = new JLabel("Synopsis");
+        synopsisTitle = new JLabel("Synopsis");
         synopsisTitle.setFont(new Font("Advent Pro", Font.BOLD, 30));
         synopsisTitle.setBounds(playPanel.getX() + playPanel.getWidth() + 30, playPanel.getY(), 150, 50);
 
@@ -99,7 +100,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
 
         if (userID != null) {
 
-            JLabel favouritesPrompt = new JLabel("Save to Favourites:");
+            favouritesPrompt = new JLabel("Save to Favourites:");
             favouritesPrompt.setFont(new Font("Advent Pro", Font.BOLD, 30));
             favouritesPrompt.setBounds(synopsisTitle.getX(), synopsisText.getY() + synopsisText.getHeight(), 250, 50);
             favouritesPrompt.setBackground(Color.RED);
@@ -140,16 +141,24 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                     if (isCurrentlyBookmarked) {
                         Favourite.removeFavouriteFromList(userID, String.valueOf(movieID));
                         bookmarkHolder.setIcon(finalNotBookmarkedIcon);
-                        JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        if (currentLanguage.equals("English")) {
+                            JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        } else if (currentLanguage.equals("Malay")) {
+                            JOptionPane.showMessageDialog(null, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        }
                         UserFrame.frame.dispose();
-                        new UserFrame(userID, frame.getX(), frame.getY());
+                        new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);
                         UserFrame.frame.setVisible(false);
                     } else {
                         Favourite.addFavouriteToList(userID, String.valueOf(movieID));
                         bookmarkHolder.setIcon(finalBookmarkedIcon);
-                        JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        if (currentLanguage.equals("English")) {
+                            JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        } else if (currentLanguage.equals("Malay")) {
+                            JOptionPane.showMessageDialog(null, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                        }
                         UserFrame.frame.dispose();
-                        new UserFrame(userID, frame.getX(), frame.getY());
+                        new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);
                         UserFrame.frame.setVisible(false);
                     }
                 }
@@ -186,6 +195,14 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
             rateButton.setBorderPainted(false);
             rateButton.addMouseListener(this);
 
+            if (currentLanguage.equals("English")) {
+                favouritesPrompt.setText("Save to Favourites:");
+                rateButton.setText("Rate me!");
+            } else if (currentLanguage.equals("Malay")) {
+                favouritesPrompt.setText("Tambah ke senarai:");
+                rateButton.setText("Menilai saya!");
+            }
+
             frame.add(rateButton);
             frame.add(favouritesPrompt);
             frame.add(bookmarkHolder);
@@ -195,6 +212,16 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         playPanel.add(playPlaceholder);
         playPanel.add(playPrompt);
         playPanel.addMouseListener(this);
+
+        if (currentLanguage.equals("English")) {
+            frame.setTitle("Movie Video Page");
+            playPrompt.setText("Click me to play video:");
+            synopsisTitle.setText("Synopsis");
+        } else if (currentLanguage.equals("Malay")) {
+            frame.setTitle("Halaman Video Filem");
+            playPrompt.setText("Tekan saya untuk memainkan video:");
+            synopsisTitle.setText("Sinopsis");
+        }
 
         frame.add(synopsisTitle);
         frame.add(synopsisText);
@@ -230,6 +257,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
             if (userID != null) {
                 UserFrame.overallLayer.remove(UserFrame.historyLayer);
                 UserFrame.overallLayer.add(new WatchHistory(userID), "History");
+                UserFrame.currentLanguage = currentLanguage;
                 UserFrame.frame.setLocation(frame.getX(), frame.getY());
                 UserFrame.frame.setVisible(true);
             } else {
@@ -257,20 +285,38 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                     History.writeHistoryToFile();
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Video is not available. Please search the movie manually online.");
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(null, "Video is not available. Please search the movie manually online.");
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(null, "Video tidak wujud. Sila cari dalam talian secara manual.");
+                }
             }
         } else if (e.getSource() == rateButton) {
             String[] options = {"5", "4", "3", "2", "1"};
-            int userChoice = JOptionPane.showOptionDialog(
-                    null,
-                    "Please choose a rating.",
-                    "New Movie Rating",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    new ImageIcon("asset/Rating.png"),
-                    options,
-                    null
-            );
+            int userChoice = -1;
+            if (currentLanguage.equals("English")) {
+                userChoice = JOptionPane.showOptionDialog(
+                        null,
+                        "Please choose a rating.",
+                        "New Movie Rating",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        new ImageIcon("asset/Rating.png"),
+                        options,
+                        null
+                );
+            } else if (currentLanguage.equals("Malay")) {
+                userChoice = JOptionPane.showOptionDialog(
+                        null,
+                        "Sila pilih penilaian anda.",
+                        "Penilaian Filem Baharu",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        new ImageIcon("asset/Rating.png"),
+                        options,
+                        null
+                );
+            }
             if (userChoice != -1) {
                 int rating = 5 - userChoice;
 
@@ -282,8 +328,11 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                 Ratings.ratingsEntireList.add(ratingItem);
                 Ratings.writeRatingToFile();
 
-                JOptionPane.showMessageDialog(null, "Ratings saved successful.", "Success save", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
-
+                if (currentLanguage.equals("English")) {
+                    JOptionPane.showMessageDialog(null, "Ratings saved successful.", "Success save", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                } else if (currentLanguage.equals("Malay")) {
+                    JOptionPane.showMessageDialog(null, "Penilaian berjaya disimpan.", "Berjaya Disimpan", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                }
             }
 
         }

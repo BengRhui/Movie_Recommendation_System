@@ -171,7 +171,7 @@ public class GuestFrame implements ActionListener, MouseListener {
             favouriteListLabel.setText("Favourite List");
             watchHistoryLabel.setText("Watch History");
             changeLanguageLabel.setText("Change Language");
-            logoutLabel.setText("Logout");
+            logoutLabel.setText("Exit");
         } else if (language.equals("Malay")) {
             frame.setTitle("Sistem Cadangan Filem");
             homePageLabel.setText("Menu Utama");
@@ -179,7 +179,7 @@ public class GuestFrame implements ActionListener, MouseListener {
             favouriteListLabel.setText("Senarai Kegemaran");
             watchHistoryLabel.setText("Sejarah Menonton");
             changeLanguageLabel.setText("Tukar Bahasa");
-            logoutLabel.setText("Log Keluar");
+            logoutLabel.setText("Keluar");
         }
     }
 
@@ -216,7 +216,12 @@ public class GuestFrame implements ActionListener, MouseListener {
             Image resizingLogoutLogo = logoutLogo.getImage();
             resizingLogoutLogo = resizingLogoutLogo.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             logoutLogo = new ImageIcon(resizingLogoutLogo);
-            int userExit = JOptionPane.showConfirmDialog(frame, "Are you sure you wish to exit the system?", "Confirm exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            int userExit = -1;
+            if (currentLanguage.equals("English")) {
+                userExit = JOptionPane.showConfirmDialog(frame, "Are you sure you wish to exit the system?", "Confirm exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            } else if (currentLanguage.equals("Malay")) {
+                userExit = JOptionPane.showConfirmDialog(frame, "Adakah anda ingin keluar dari sistem?", "Pengesahan keluar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            }
             if (userExit == JOptionPane.YES_OPTION) {
                 try {
                     new Login(frame.getX(), frame.getY());

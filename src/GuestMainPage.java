@@ -15,7 +15,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
         backgroundPlaceholder.setIcon(background);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        title = new JLabel("Sign up now to unlock all features of our system!");
+        title = new JLabel("Sign up now to unlock all features of our system !");
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
@@ -24,7 +24,7 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
 
         promptSignUp = new JLabel("<html>Click <u>here</u> to sign up now.</html>");
         promptSignUp.setFont(new Font("Avenir", Font.PLAIN, 25));
-        promptSignUp.setBounds(50, 120, 300, 50);
+        promptSignUp.setBounds(50, 120, 500, 50);
         promptSignUp.setHorizontalAlignment(JLabel.LEFT);
         promptSignUp.setVerticalAlignment(JLabel.CENTER);
         this.add(promptSignUp, JLayeredPane.PALETTE_LAYER);
@@ -68,13 +68,13 @@ public class GuestMainPage extends JLayeredPane implements MouseListener {
 
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
-            title.setText("Sign up now to unlock all features of our system!");
+            title.setText("Sign up now to unlock all features of our system !");
             promptSignUp.setText("<html>Click <u>here</u> to sign up now.</html>");
             guestMessage.setText("<html>You can still try out our<br>movie search feature here.</html>");
         } else if (language.equals("Malay")) {
-            title.setText("Daftar sekarang untuk membuka kunci semua ciri sistem kami!");
-            promptSignUp.setText("<html>Click <u>here</u> to sign up now.</html>");
-            guestMessage.setText("<html>You can still try out our<br>movie search feature here.</html>");
+            title.setText("Daftar sekarang untuk mengalami semua fungsi !");
+            promptSignUp.setText("<html>Klik <u>sini</u> untuk daftar akaun baharu sekarang.</html>");
+            guestMessage.setText("<html>Anda masih boleh cuba<br>fungsi carian filem kami.</html>");
         }
     }
 

@@ -180,7 +180,7 @@ public class Login implements ActionListener, MouseListener {
             for (int i = 0; i < userID.size(); i ++) {
                 if ((username.get(i).equals(inputtedEmail))  && (password.get(i).equals(String.valueOf(inputtedPassword)))) {
                     nextPage = true;
-                    new UserFrame(userID.get(i), frame.getX(), frame.getY());
+                    new UserFrame(userID.get(i), frame.getX(), frame.getY(), "English");
                     frame.dispose();
                 }
             }

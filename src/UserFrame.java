@@ -14,10 +14,12 @@ public class UserFrame implements ActionListener, MouseListener {
     JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel;
     static JLayeredPane homeLayer, favouriteListLayer, searchLayer, historyLayer;
     Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
-    CardLayout cardLayout = new CardLayout();
+    static CardLayout cardLayout = new CardLayout();
     static String currentLanguage = "English";
 
-    UserFrame(String userID, double xPosition, double yPosition) {
+    UserFrame(String userID, double xPosition, double yPosition, String currentLanguage) {
+
+        UserFrame.currentLanguage = currentLanguage;
 
         frame = new JFrame("Movie Recommendation System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -174,6 +176,26 @@ public class UserFrame implements ActionListener, MouseListener {
 
         cardLayout.show(overallLayer, "Home");
 
+        if (currentLanguage.equals("English")) {
+            frame.setTitle("Movie Recommendation System");
+            homePageLabel.setText("Home Page");
+            movieSearchLabel.setText("Movie Search");
+            favouriteListLabel.setText("Favourite List");
+            watchHistoryLabel.setText("Watch History");
+            reportIssueLabel.setText("Report Issue");
+            changeLanguageLabel.setText("Change Language");
+            logoutLabel.setText("Logout");
+        } else if (currentLanguage.equals("Malay")) {
+            frame.setTitle("Sistem Cadangan Filem");
+            homePageLabel.setText("Menu Utama");
+            movieSearchLabel.setText("Carian Filem");
+            favouriteListLabel.setText("Senarai Kegemaran");
+            watchHistoryLabel.setText("Sejarah Menonton");
+            reportIssueLabel.setText("Laporkan Isu");
+            changeLanguageLabel.setText("Tukar Bahasa");
+            logoutLabel.setText("Log Keluar");
+        }
+
         frame.add(logoPlaceholder);
         frame.add(overallHomePagePanel);
         frame.add(overallMovieSearchPanel);
@@ -264,7 +286,12 @@ public class UserFrame implements ActionListener, MouseListener {
             Image resizingLogoutLogo = logoutLogo.getImage();
             resizingLogoutLogo = resizingLogoutLogo.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             logoutLogo = new ImageIcon(resizingLogoutLogo);
-            int userExit = JOptionPane.showConfirmDialog(frame, "Are you sure you wish to logout from the system?", "Confirm logout", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            int userExit = -1;
+            if (currentLanguage.equals("English")) {
+                userExit = JOptionPane.showConfirmDialog(frame, "Are you sure you wish to logout from the system?", "Confirm logout", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            } else if (currentLanguage.equals("Malay")) {
+                userExit = JOptionPane.showConfirmDialog(frame, "Adakah anda ingin log keluar dari sistem?", "Pengesahan Log Keluar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, logoutLogo);
+            }
             if (userExit == JOptionPane.YES_OPTION) {
                 try {
                     new Login(frame.getX(), frame.getY());

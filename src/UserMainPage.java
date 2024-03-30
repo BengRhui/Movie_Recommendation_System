@@ -19,12 +19,15 @@ import java.util.Map;
 
 public class UserMainPage extends JLayeredPane implements MouseListener {
 
-    JPanel container;
+    JPanel container, panel;
     CardLayout cardLayout = new CardLayout();
     JLabel previous, next;
     static JLabel title;
+    static String currentLanguage = "English";
     int currentDisplay = 0, numberOfPages;
     UserMainPage(String userID) {
+
+        currentLanguage = UserFrame.currentLanguage;
 
         this.setSize(970, 768);
 
@@ -58,10 +61,15 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
         }
 
         if (listOfRecommendation.isEmpty()) {
-            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
             panel.setBackground(new Color(255, 255, 255, 0));
-            JLabel name = new JLabel("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
+            JLabel name = new JLabel();
+            if (currentLanguage.equals("English")) {
+                name.setText("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
+            } else if (currentLanguage.equals("Malay")) {
+                name.setText("Tiada cadangan. Sila menilai sekurang-kurangnya 10 filem untuk mendapatkan cadangan.");
+            }
             name.setFont(new Font("Avenir", Font.PLAIN, 20));
             panel.add(name);
             add(panel, PALETTE_LAYER);
@@ -221,11 +229,19 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                             if (isCurrentlyBookmarked) {
                                 Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieID));
                                 bookmarkHolder.setIcon(finalNotBookmarkedIcon);
-                                JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                if (currentLanguage.equals("English")) {
+                                    JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                } else if (currentLanguage.equals("Malay")) {
+                                    JOptionPane.showMessageDialog(null, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                }
                             } else {
                                 Favourite.addFavouriteToList(userID, String.valueOf(item.movieID));
                                 bookmarkHolder.setIcon(finalBookmarkedIcon);
-                                JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                if (currentLanguage.equals("English")) {
+                                    JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                } else if (currentLanguage.equals("Malay")) {
+                                    JOptionPane.showMessageDialog(null, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                }
                             }
 
                             UserFrame.overallLayer.remove(UserFrame.searchLayer);
@@ -299,7 +315,23 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                 next.setBounds(400, 700, 100, 50);
                 next.addMouseListener(this);
                 this.add(next, JLayeredPane.PALETTE_LAYER);
+
+                if (currentLanguage.equals("English")) {
+                    previous.setText("Previous");
+                    next.setText("Next");
+                } else if (currentLanguage.equals("Malay")) {
+                    previous.setText("Sebelumnya");
+                    next.setText("Selepasnya");
+                }
+
             }
+
+            if (currentLanguage.equals("English")) {
+                title.setText("Top picks we recommend:");
+            } else if (currentLanguage.equals("Malay")) {
+                title.setText("Filem yang kami cadangkan:");
+            }
+
         }
 
 
@@ -308,8 +340,10 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
             title.setText("Top picks we recommend:");
+            currentLanguage = language;
         } else if (language.equals("Malay")) {
             title.setText("Filem yang kami cadangkan:");
+            currentLanguage = language;
         }
     }
 
