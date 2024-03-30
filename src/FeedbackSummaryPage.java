@@ -59,25 +59,8 @@ public class FeedbackSummaryPage implements MouseListener {
         filterImage = new JLabel();
         filterImage.setIcon(new ImageIcon("src/filter.png"));
         filterImage.setBounds(1250,20,65,65);
-        filterImage.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new FilterTimePage();
-                frame.dispose();
-            }
+        filterImage.addMouseListener(this);
 
-            @Override
-            public void mousePressed(MouseEvent e) {}
-
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        });
         backgroundImage = new JLabel();
         backgroundImage.setIcon(new ImageIcon("src/adminBackground.png"));
         backgroundImage.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -171,6 +154,9 @@ public class FeedbackSummaryPage implements MouseListener {
         } else if (e.getSource() == systemMaintenance) {
             new MaintenancePage();
             frame.dispose();
+        } else if (e.getSource() == filterImage) {
+            new FilterTimePage();
+            frame.dispose();
         }
 
         if (e.getSource() == logOut || e.getSource() == logoutLogo) {
@@ -192,6 +178,8 @@ public class FeedbackSummaryPage implements MouseListener {
         if (e.getSource() == logOut || e.getSource() == logoutLogo) {
             logOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             logoutLogo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         }
 
     }
@@ -201,8 +189,11 @@ public class FeedbackSummaryPage implements MouseListener {
         if (e.getSource() == logOut || e.getSource() == logoutLogo) {
             logOut.setCursor(Cursor.getDefaultCursor());
             logoutLogo.setCursor(Cursor.getDefaultCursor());
+            filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
+
+
 
 
 
