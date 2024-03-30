@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class FilterTimePage {
     static JFrame frame;
@@ -9,8 +10,8 @@ public class FilterTimePage {
     static ButtonGroup buttonGroup;
     static JButton button;
 
-    public static void main(String[] args) {
-        frame = new JFrame("Feedback Summary");
+    public static void main(String[] args){
+        frame = new JFrame("Filter Time Page");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(700, 500);
         frame.setLayout(null);
@@ -63,5 +64,12 @@ public class FilterTimePage {
         frame.add(backgroundPanel);
         frame.setVisible(true);
     }
+
+    public static JLabel getFilterImage() {
+        return FeedbackSummaryPage.filterImage;
+    }
 }
+
+
+
 
