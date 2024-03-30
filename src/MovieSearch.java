@@ -11,15 +11,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class MovieSearch extends JLayeredPane implements KeyListener, MouseListener {
 
     CardLayout cardLayout = new CardLayout();
-    JLabel backgroundPlaceholder, searchLogoPlaceholder, label;
+    JLabel backgroundPlaceholder, searchLogoPlaceholder, label, filterPlaceholder;
     static JLabel title, promptText, previous, next;
     JPanel searchBarPlaceholder, container = new JPanel(cardLayout), panel;
     JTextField textField;
+    String newArrangeChoice;
     static String userID, currentLanguage = "English";
     int currentDisplay = 0, numberOfPages;
 
@@ -54,7 +56,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
         ImageIcon searchIcon = new ImageIcon("asset/Search Icon.png");
         Image resizingSearchIcon = searchIcon.getImage();
-        resizingSearchIcon = resizingSearchIcon.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        resizingSearchIcon = resizingSearchIcon.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(resizingSearchIcon);
         searchLogoPlaceholder = new JLabel();
         searchLogoPlaceholder.setIcon(searchIcon);
@@ -72,11 +74,18 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
         textField = new JTextField();
         textField.setFont(new Font("Avenir", Font.PLAIN, 20));
-        textField.setBounds(promptText.getX(), promptText.getY(), promptText.getWidth() - 100, promptText.getHeight());
+        textField.setBounds(promptText.getX(), promptText.getY(), promptText.getWidth() - 150, promptText.getHeight());
         textField.setBackground(new Color(255, 255, 255, 0));
         textField.setBorder(null);
         this.add(textField, JLayeredPane.POPUP_LAYER);
         textField.addKeyListener(this);
+
+        filterPlaceholder = new JLabel();
+        ImageIcon filterImage = new ImageIcon("src/filter.png");
+        filterPlaceholder.setIcon(filterImage);
+        filterPlaceholder.setBounds(searchLogoPlaceholder.getX() - 60, searchLogoPlaceholder.getY(), 50, 50);
+        this.add(filterPlaceholder, JLayeredPane.POPUP_LAYER);
+        filterPlaceholder.addMouseListener(this);
 
         if (currentLanguage.equals("English")) {
             title.setText("Search for movies here:");
@@ -125,6 +134,15 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                 }
             }
 
+            if (newArrangeChoice != null) {
+                if (newArrangeChoice.equals("A - Z")) {
+                    filteredList.sort(Comparator.comparing(Movies::getTitle));
+                } else if (newArrangeChoice.equals("Z - A")) {
+                    filteredList.sort(Comparator.comparing(Movies::getTitle));
+                    filteredList.reversed();
+                }
+            }
+
             int initialSize = filteredList.size();
 
             if (initialSize == 0) {
@@ -154,9 +172,22 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
                 numberOfPages = (int) Math.ceil(initialSize / 10.0);
 
-                Iterator<Movies> iteratorList = filteredList.iterator();
+                Iterator<Movies> iteratorList;
 
-                JFrame popUpLoading = new JFrame("Loading");
+                if (newArrangeChoice != null && newArrangeChoice.equals("Z - A")) {
+                    iteratorList = filteredList.reversed().iterator();
+                } else {
+                    iteratorList = filteredList.iterator();
+                }
+
+                JFrame popUpLoading = new JFrame();
+
+                if (currentLanguage.equals("English")) {
+                    popUpLoading.setTitle("Loading");
+                } else if (currentLanguage.equals("Malay")) {
+                    popUpLoading.setTitle("Sedang diproses");
+                }
+                
                 popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 popUpLoading.setLayout(new FlowLayout());
                 popUpLoading.setSize(300, 50);
@@ -473,21 +504,62 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             if (currentDisplay == numberOfPages - 1) {
                 next.setVisible(false);
             }
+        } else if (e.getSource() == filterPlaceholder) {
+
+            String[] arrange = {"A - Z", "Z - A"};
+            String arrangeChoice;
+
+            if (newArrangeChoice == null) {
+                newArrangeChoice = "A - Z";
+            }
+
+            if (currentLanguage.equals("English")) {
+                arrangeChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "How would you like to sort your movies:",
+                        "Select Arrangement",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        arrange,
+                        newArrangeChoice);
+                newArrangeChoice = arrangeChoice;
+            } else if (currentLanguage.equals("Malay")) {
+                arrangeChoice = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Bagaimanakah anda ingin menyusun filem:",
+                        "Pilih Susunan",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        arrange,
+                        newArrangeChoice);
+                newArrangeChoice = arrangeChoice;
+            }
+
         }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        previous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        next.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        filterPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        if (previous != null) {
+            previous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+        if (next != null) {
+            next.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         searchLogoPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        previous.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        next.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        filterPlaceholder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        if (previous != null) {
+            previous.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+        if (next != null) {
+            next.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
     }
 }
 

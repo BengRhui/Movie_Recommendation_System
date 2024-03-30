@@ -28,6 +28,10 @@ public class Movies {
         this.movieUrl = movieUrl;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     /*
     public static void main(String[] args) {
         new Movies();

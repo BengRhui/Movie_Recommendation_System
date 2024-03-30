@@ -64,7 +64,14 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
 
             Iterator<Favourite> iteratorList = listOfFavourites.iterator();
 
-            JFrame popUpLoading = new JFrame("Loading");
+            JFrame popUpLoading = new JFrame();
+
+            if (currentLanguage.equals("English")) {
+                popUpLoading.setTitle("Loading");
+            } else if (currentLanguage.equals("Malay")) {
+                popUpLoading.setTitle("Sedang diproses");
+            }
+
             popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             popUpLoading.setLayout(new FlowLayout());
             popUpLoading.setSize(300, 50);
