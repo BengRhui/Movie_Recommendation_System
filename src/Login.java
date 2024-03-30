@@ -16,13 +16,17 @@ public class Login implements ActionListener, MouseListener {
     JLabel promptNewUser, promptGuest;
     Action moveCursorToPassword;
 
-    ArrayList<String> username = new ArrayList<>();
-    ArrayList<String> password = new ArrayList<>();
-    ArrayList<String> userID = new ArrayList<>();
+    static ArrayList<String> username = new ArrayList<>();
+    static ArrayList<String> password = new ArrayList<>();
+    static ArrayList<String> userID = new ArrayList<>();
+    ArrayList<Admin> adminList;
 
     Login(int horizontalValue, int verticalValue) throws IOException {
 
-        BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
+        Admin.readAdminFromFile();
+        adminList = Admin.overallAdmin;
+
+        BufferedReader rd = new BufferedReader(new FileReader("textfile/customerAccount.txt"));
 
         String line;
         while ((line = rd.readLine()) != null) {
@@ -184,6 +188,15 @@ public class Login implements ActionListener, MouseListener {
                     frame.dispose();
                 }
             }
+
+            for (Admin admin : adminList) {
+                if (admin.adminEmail.equals(inputtedEmail) && admin.adminPassword.contentEquals(inputtedPassword)) {
+                    nextPage = true;
+                    new AdminFrame(frame.getX(), frame.getY());
+                    frame.dispose();
+                }
+            }
+
             if (!nextPage) {
                 JOptionPane.showMessageDialog(frame, "Wrong email or password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 passwordInput.setText("");

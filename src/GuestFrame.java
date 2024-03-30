@@ -10,7 +10,7 @@ public class GuestFrame implements ActionListener, MouseListener {
     static String currentLanguage = "English";
     Color ownGray = new Color(242, 242, 242);
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel,
-            changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder;
+            changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder, systemName;
     JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel, overallLayer;
     JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel;
     Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
@@ -34,6 +34,10 @@ public class GuestFrame implements ActionListener, MouseListener {
         logoPlaceholder = new JLabel();
         logoPlaceholder.setBounds(20, 20, 100, 100);
         logoPlaceholder.setIcon(resizedLogo);
+
+        systemName = new JLabel("<html>ABC<br>Movie Recommender</html>");
+        systemName.setFont(new Font("Advent Pro", Font.BOLD, 20));
+        systemName.setBounds(130, 20, 200, 100);
 
         homePageLabel = new JLabel("Home Page");
         homePageLabel.setBounds(40, 0, 390, 60);
@@ -148,6 +152,7 @@ public class GuestFrame implements ActionListener, MouseListener {
         cardLayout.show(overallLayer, "Home");
 
         frame.add(logoPlaceholder);
+        frame.add(systemName);
         frame.add(overallHomePagePanel);
         frame.add(overallMovieSearchPanel);
         frame.add(overallFavouriteListPanel);
@@ -166,6 +171,7 @@ public class GuestFrame implements ActionListener, MouseListener {
     public void changeLanguage(String language) {
         if (language.equals("English")) {
             frame.setTitle("Movie Recommendation System");
+            systemName.setText("<html>ABC<br>Movie Recommender</html>");
             homePageLabel.setText("Home Page");
             movieSearchLabel.setText("Movie Search");
             favouriteListLabel.setText("Favourite List");
@@ -174,6 +180,7 @@ public class GuestFrame implements ActionListener, MouseListener {
             logoutLabel.setText("Exit");
         } else if (language.equals("Malay")) {
             frame.setTitle("Sistem Cadangan Filem");
+            systemName.setText("<html>ABC<br>Sistem Cadangan Filem</html>");
             homePageLabel.setText("Menu Utama");
             movieSearchLabel.setText("Carian Filem");
             favouriteListLabel.setText("Senarai Kegemaran");

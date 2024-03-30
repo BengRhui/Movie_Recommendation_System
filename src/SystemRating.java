@@ -18,6 +18,10 @@ public class SystemRating {
         this.userFeedback = userFeedback;
     }
 
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
     public static void readSystemRatingFromFile() {
         overallRatingList.clear();
         try {

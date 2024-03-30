@@ -2,201 +2,173 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Comparator;
 
-public class FeedbackSummaryPage implements MouseListener {
-    static JFrame frame;
-    static JPanel backgroundPanel, rightPanel, rightPanel2, rightPanel3;
-    static JLabel mainTitle, feedbackSummaryButton, systemMaintenance, logOut, feedbackSummary, recentFeedback, rightRating, rightRating2, rightRating3, filterImage;
-    static JLabel backgroundImage, graphImage, logo,logoutLogo,  rightContent, rightContent2, rightContent3;
+public class FeedbackSummaryPage extends JLayeredPane {
 
-    static JLayeredPane layer;
+    static JLabel feedbackSummary, recentFeedback, filterImage, graphTitle, backgroundImage, graphLabel1, graphLabel2,
+            graphLabel3, graphLabel4, graphLabel5;
+    JPanel scrollBackground, graphImage;
+    JScrollPane scrollPane;
+    static ArrayList<SystemRating> displayRating = new ArrayList<>();
 
-    public FeedbackSummaryPage (){
+    public FeedbackSummaryPage (ArrayList<SystemRating> ratingList){
 
+        if (ratingList == null) {
+            SystemRating.readSystemRatingFromFile();
+            SystemRating.overallRatingList.sort(Comparator.comparing(SystemRating::getTimestamp));
+            displayRating.addAll(SystemRating.overallRatingList.reversed());
+        } else {
+            displayRating = ratingList;
+        }
 
-        frame = new JFrame("Feedback Summary");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1366, 768);
-        frame.setLayout(null);
-        frame.setResizable(false);
-
-        logo = new JLabel();
-        logo.setIcon(new ImageIcon("src/LogoAdmin.jpg"));
-        logo.setBounds(15,35,65,65);
-
-        logoutLogo = new JLabel();
-        logoutLogo.setIcon(new ImageIcon("src/Logoutadmin Logo.png"));
-        logoutLogo.setBounds(10,640,65,65);
-        logoutLogo.addMouseListener(this);
-
-        mainTitle = new JLabel("<html>ABC Movie<br>Recommender<html>");
-        mainTitle.setFont(new Font("Arial",Font.BOLD,20));
-        mainTitle.setBounds(80,20,150,100);
-
-        feedbackSummaryButton = new JLabel("Feedback Summary");
-        feedbackSummaryButton.setFont(new Font("Arial",Font.PLAIN,20));
-        feedbackSummaryButton.setBounds(30,50,200,150);
-        feedbackSummaryButton.addMouseListener(this);
-
-        systemMaintenance = new JLabel("System Maintenance");
-        systemMaintenance.setFont(new Font("Arial",Font.PLAIN,20));
-        systemMaintenance.setBounds(30,110,200,150);
-        systemMaintenance.addMouseListener(new MaintenancePage());
-
-        logOut = new JLabel("Logout");
-        logOut.setFont(new Font("Arial",Font.BOLD,20));
-        logOut.setBounds(70,600,150,150);
-        logOut.addMouseListener(this);
-
-        feedbackSummary = new JLabel("Feedback Summary");
-        feedbackSummary.setFont(new Font("Arial",Font.BOLD,30));
-        feedbackSummary.setBounds(400,0,300,100);
-
-        graphImage = new JLabel();
-        graphImage.setIcon(new ImageIcon("src/adminGraph.png"));
-        graphImage.setBounds(400,120,400,550);
-
-        filterImage = new JLabel();
-        filterImage.setIcon(new ImageIcon("src/filter.png"));
-        filterImage.setBounds(1250,20,65,65);
-        filterImage.addMouseListener(this);
+        this.setSize(970, 768);
 
         backgroundImage = new JLabel();
-        backgroundImage.setIcon(new ImageIcon("src/adminBackground.png"));
-        backgroundImage.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+        backgroundImage.setIcon(new ImageIcon("asset/Admin Background.png"));
+        backgroundImage.setBounds(0, 0, this.getWidth(), this.getHeight());
 
-        recentFeedback = new JLabel("<html><u style='border-bottom: 2px solid black;'>Recent Feedbacks<u><html>");
-        recentFeedback.setFont(new Font("Arial", Font.BOLD, 25));
-        recentFeedback.setBounds(900, 90, 300, 100);
+        feedbackSummary = new JLabel("Feedback Summary");
+        feedbackSummary.setFont(new Font("Advent Pro", Font.BOLD, 40));
+        feedbackSummary.setBounds(50, 30, 700, 100);
 
-        rightRating = new JLabel("Ratings 5 Stars");
-        rightRating.setFont(new Font("Arial",Font.BOLD,17));
-        rightRating.setBounds(930,160,300,70);
+        graphTitle = new JLabel("<html><u>Distribution of User Ratings</u></html>");
+        graphTitle.setFont(new Font("Avenir", Font.BOLD, 20));
+        graphTitle.setBounds(50, 130, 300, 30);
 
-        rightContent = new JLabel("<html>Good system. Everything work as intended<br>without error. Interesting recommendations<br>provided by the system<html>");
-        rightContent.setFont(new Font("Arial",Font.PLAIN,17));
-        rightContent.setBounds(930,170,500,150);
-
-        rightPanel = new JPanel();
-        rightPanel.setBackground(Color.WHITE);
-        rightPanel.setBounds(900,160,400,150);
-
-        rightRating2 = new JLabel("Ratings 2 Stars");
-        rightRating2.setFont(new Font("Arial",Font.BOLD,17));
-        rightRating2.setBounds(930,330,300,70);
-
-        rightContent2 = new JLabel("<html>Not a very informative system. All the movie<br>recommendations provided are not up-to-date.<html>");
-        rightContent2.setFont(new Font("Arial",Font.PLAIN,17));
-        rightContent2.setBounds(930,330,500,150);
-
-        rightPanel2 = new JPanel();
-        rightPanel2.setBackground(Color.WHITE);
-        rightPanel2.setBounds(900,330,400,150);
-
-        rightRating3 = new JLabel("Ratings 4 Stars");
-        rightRating3.setFont(new Font("Arial",Font.BOLD,17));
-        rightRating3.setBounds(930,500,300,70);
-
-        rightContent3 = new JLabel("<html>Quite a good system, but the system can<br>involve more functionalities so that we can<br>interact more with the system<html>");
-        rightContent3.setFont(new Font("Arial",Font.PLAIN,17));
-        rightContent3.setBounds(930,510,500,150);
-
-        rightPanel3 = new JPanel();
-        rightPanel3.setBackground(Color.WHITE);
-        rightPanel3.setBounds(900,500,400,150);
-
-
-        layer = new JLayeredPane();
-        layer.setBounds(0, 0, frame.getWidth(), frame.getHeight());
-        layer.add(backgroundImage, JLayeredPane.DEFAULT_LAYER);
-        layer.add(feedbackSummary, JLayeredPane.PALETTE_LAYER);
-        layer.add(graphImage, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightRating, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightContent, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightRating2, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightContent2, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightRating3, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightContent3, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightPanel, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightPanel2, JLayeredPane.PALETTE_LAYER);
-        layer.add(rightPanel3, JLayeredPane.PALETTE_LAYER);
-        layer.add(recentFeedback, JLayeredPane.PALETTE_LAYER);
-        layer.add(filterImage, JLayeredPane.PALETTE_LAYER);
-
-        backgroundPanel = new JPanel(null);
-        backgroundPanel.setBackground(Color.WHITE);
-        backgroundPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
-        backgroundPanel.setSize(frame.getWidth()/4,frame.getHeight());
-
-        backgroundPanel.add(mainTitle);
-        backgroundPanel.add(feedbackSummaryButton);
-        backgroundPanel.add(systemMaintenance);
-        backgroundPanel.add(logOut);
-        backgroundPanel.add(logo);
-        backgroundPanel.add(logoutLogo);
-
-
-        frame.add(backgroundPanel);
-        frame.add(layer);
-        frame.setVisible(true);
-
-    }
-
-    public static void main(String[] args){
-        new FeedbackSummaryPage();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == feedbackSummaryButton) {
-            new FeedbackSummaryPage();
-            frame.dispose();
-        } else if (e.getSource() == systemMaintenance) {
-            new MaintenancePage();
-            frame.dispose();
-        } else if (e.getSource() == filterImage) {
-            new FilterTimePage();
-            frame.dispose();
+        int count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0;
+        for (SystemRating rating: displayRating) {
+            switch (rating.rating) {
+                case 1:
+                    count1 ++;
+                    break;
+                case 2:
+                    count2 ++;
+                    break;
+                case 3:
+                    count3 ++;
+                    break;
+                case 4:
+                    count4 ++;
+                    break;
+                case 5:
+                    count5 ++;
+                    break;
+            }
         }
 
-        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+        int[] data = {count1, count2, count3, count4, count5};
+        graphImage = new BarChart(data);
+        graphImage.setBounds(50, 190, 380, 450);
+
+        graphLabel1 = new JLabel("1");
+        graphLabel1.setFont(new Font("Avenir", Font.PLAIN, 20));
+        graphLabel1.setBounds(90, 640, 380, 50);
+
+        graphLabel2 = new JLabel("2");
+        graphLabel2.setFont(new Font("Avenir", Font.PLAIN, 20));
+        graphLabel2.setBounds(163, 640, 380, 50);
+
+        graphLabel3 = new JLabel("3");
+        graphLabel3.setFont(new Font("Avenir", Font.PLAIN, 20));
+        graphLabel3.setBounds(235, 640, 380, 50);
+
+        graphLabel4 = new JLabel("4");
+        graphLabel4.setFont(new Font("Avenir", Font.PLAIN, 20));
+        graphLabel4.setBounds(308, 640, 380, 50);
+
+        graphLabel5 = new JLabel("5");
+        graphLabel5.setFont(new Font("Avenir", Font.PLAIN, 20));
+        graphLabel5.setBounds(379, 640, 380, 50);
+
+        filterImage = new JLabel();
+        ImageIcon filter = new ImageIcon("asset/Filter.png");
+        Image resizeImage = filter.getImage();
+        resizeImage = resizeImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        filter = new ImageIcon(resizeImage);
+        filterImage.setIcon(filter);
+        filterImage.setBounds(800,30,100, 100);
+        filterImage.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                new FilterTimePage();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+
+        recentFeedback = new JLabel("<html><u>Recent Feedbacks</u><html>");
+        recentFeedback.setFont(new Font("Avenir", Font.BOLD, 20));
+        recentFeedback.setBounds(500, 130, 300, 30);
+
+        scrollBackground = new JPanel();
+        scrollBackground.setLayout(new BoxLayout(scrollBackground, BoxLayout.Y_AXIS));
+        scrollBackground.setBackground(new Color(163, 193, 239));
+
+        int height = displayRating.size() * (150 + 10);
+
+        scrollBackground.setPreferredSize(new Dimension(350, height));
+
+        for (SystemRating rating: displayRating) {
+
+            JPanel panel = new JPanel(null);
+            panel.setBackground(Color.WHITE);
+            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+            panel.setPreferredSize(new Dimension(350, 150));
+
+            JLabel starRating = new JLabel("Ratings: " + rating.rating +  " stars");
+            starRating.setFont(new Font("Avenir", Font.PLAIN, 18));
+            starRating.setBounds(20, 20, 330, 30);
+
+            JLabel comment = new JLabel("<html>" + rating.userFeedback + "</html>");
+            comment.setFont(new Font("Avenir", Font.PLAIN, 16));
+            comment.setBounds(20, 60, 330, 100);
+            comment.setVerticalAlignment(JLabel.TOP);
+
+            panel.add(starRating);
+            panel.add(comment);
+
+            scrollBackground.add(panel);
+            scrollBackground.add(Box.createVerticalStrut(20));
         }
-    }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
+        scrollPane = new JScrollPane(scrollBackground);
+        scrollPane.setBounds(500, 190, 380, 500);
+        scrollPane.setBorder(null);
 
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
-            logOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            logoutLogo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        }
+        this.add(feedbackSummary, JLayeredPane.PALETTE_LAYER);
+        this.add(filterImage, JLayeredPane.PALETTE_LAYER);
+        this.add(graphTitle, JLayeredPane.PALETTE_LAYER);
+        this.add(graphImage, JLayeredPane.PALETTE_LAYER);
+        this.add(graphLabel1, JLayeredPane.PALETTE_LAYER);
+        this.add(graphLabel2, JLayeredPane.PALETTE_LAYER);
+        this.add(graphLabel3, JLayeredPane.PALETTE_LAYER);
+        this.add(graphLabel4, JLayeredPane.PALETTE_LAYER);
+        this.add(graphLabel5, JLayeredPane.PALETTE_LAYER);
+        this.add(recentFeedback, JLayeredPane.PALETTE_LAYER);
+        this.add(scrollPane, JLayeredPane.PALETTE_LAYER);
+        this.add(backgroundImage, JLayeredPane.DEFAULT_LAYER);
 
     }
 
-    @Override
-    public void mouseExited(MouseEvent e)   {
-        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
-            logOut.setCursor(Cursor.getDefaultCursor());
-            logoutLogo.setCursor(Cursor.getDefaultCursor());
-            filterImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        }
-    }
 
-
-
-
-
-    public void setVisible(boolean b) {
-    }
 }

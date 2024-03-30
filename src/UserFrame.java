@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
 public class UserFrame implements ActionListener, MouseListener {
     static JFrame frame;
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel, reportIssueLabel,
-            reportIssuePlaceholder, changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder;
+            reportIssuePlaceholder, changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder, systemName;
     JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel;
     static JPanel overallLayer;
     JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel;
@@ -39,6 +39,10 @@ public class UserFrame implements ActionListener, MouseListener {
         logoPlaceholder = new JLabel();
         logoPlaceholder.setBounds(20, 20, 100, 100);
         logoPlaceholder.setIcon(resizedLogo);
+
+        systemName = new JLabel("<html>ABC<br>Movie Recommender</html>");
+        systemName.setFont(new Font("Advent Pro", Font.BOLD, 20));
+        systemName.setBounds(130, 20, 200, 100);
 
         homePageLabel = new JLabel("Home Page");
         homePageLabel.setBounds(40, 0, 390, 60);
@@ -178,6 +182,7 @@ public class UserFrame implements ActionListener, MouseListener {
 
         if (currentLanguage.equals("English")) {
             frame.setTitle("Movie Recommendation System");
+            systemName.setText("<html>ABC<br>Movie Recommender</html>");
             homePageLabel.setText("Home Page");
             movieSearchLabel.setText("Movie Search");
             favouriteListLabel.setText("Favourite List");
@@ -187,6 +192,7 @@ public class UserFrame implements ActionListener, MouseListener {
             logoutLabel.setText("Logout");
         } else if (currentLanguage.equals("Malay")) {
             frame.setTitle("Sistem Cadangan Filem");
+            systemName.setText("<html>ABC<br>Sistem Cadangan Filem</html>");
             homePageLabel.setText("Menu Utama");
             movieSearchLabel.setText("Carian Filem");
             favouriteListLabel.setText("Senarai Kegemaran");
@@ -197,6 +203,7 @@ public class UserFrame implements ActionListener, MouseListener {
         }
 
         frame.add(logoPlaceholder);
+        frame.add(systemName);
         frame.add(overallHomePagePanel);
         frame.add(overallMovieSearchPanel);
         frame.add(overallFavouriteListPanel);
@@ -217,6 +224,7 @@ public class UserFrame implements ActionListener, MouseListener {
     void changeLanguage(String language) {
         if (language.equals("English")) {
             frame.setTitle("Movie Recommendation System");
+            systemName.setText("<html>ABC<br>Movie Recommender</html>");
             homePageLabel.setText("Home Page");
             movieSearchLabel.setText("Movie Search");
             favouriteListLabel.setText("Favourite List");
@@ -224,8 +232,10 @@ public class UserFrame implements ActionListener, MouseListener {
             reportIssueLabel.setText("Report Issue");
             changeLanguageLabel.setText("Change Language");
             logoutLabel.setText("Logout");
+
         } else if (language.equals("Malay")) {
             frame.setTitle("Sistem Cadangan Filem");
+            systemName.setText("<html>ABC<br>Sistem Cadangan Filem</html>");
             homePageLabel.setText("Menu Utama");
             movieSearchLabel.setText("Carian Filem");
             favouriteListLabel.setText("Senarai Kegemaran");

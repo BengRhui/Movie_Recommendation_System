@@ -1,3 +1,5 @@
+1708100255;4;Quite cool. Easy to navigate as well.
+1708445855;3;Not bad. Able to recommend good movies, but the system faces latency sometimes.
 1711701624;5;Good system. Everything works as intended without error. Interesting recommendations provided by the system.
 1711705224;2;Not a very informative system. All the movie recommendations provided are not up-to-date.
 1711712424;4;Quite a good system, but the system can involve more functionalities so that we can interact more with the system.

@@ -51,7 +51,12 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
             JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
             panel.setBackground(new Color(255, 255, 255, 0));
-            JLabel name = new JLabel("No favourites yet. Do add some of the movies to our favourite list for easy access.");
+            JLabel name = new JLabel();
+            if (currentLanguage.equals("English")) {
+                name.setText("No favourites yet. Do add some of the movies to our favourite list for easy access.");
+            } else if (currentLanguage.equals("Malay")) {
+                name.setText("Tiada senarai kegemaran. Sila tambahkan filem kegemaran anda supaya filem boleh senang diakses.");
+            }
             name.setFont(new Font("Avenir", Font.PLAIN, 20));
             panel.add(name);
             add(panel, PALETTE_LAYER);

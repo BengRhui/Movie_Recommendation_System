@@ -23,7 +23,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
             currentLanguage = GuestFrame.currentLanguage;
         }
 
-        BufferedReader rd = new BufferedReader(new FileReader("textfile/account.txt"));
+        BufferedReader rd = new BufferedReader(new FileReader("textfile/customerAccount.txt"));
 
         String line;
         while ((line = rd.readLine()) != null) {
@@ -227,7 +227,7 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
                 password.add(passwordText2.toString());
                 userID.add(Collections.max(userID) + 1);
 
-                try (BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/account.txt"))) {
+                try (BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/customerAccount.txt"))) {
                     for (int i = 0; i < userID.size(); i ++) {
                         String lineToInsert = String.format("%-10s%-40s%s", (userID.get(i).toString() + ";"), (account.get(i) + ";"), password.get(i));
                         wr.write(lineToInsert);

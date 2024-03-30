@@ -81,7 +81,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
         textField.addKeyListener(this);
 
         filterPlaceholder = new JLabel();
-        ImageIcon filterImage = new ImageIcon("src/filter.png");
+        ImageIcon filterImage = new ImageIcon("asset/Filter.png");
         filterPlaceholder.setIcon(filterImage);
         filterPlaceholder.setBounds(searchLogoPlaceholder.getX() - 60, searchLogoPlaceholder.getY(), 50, 50);
         this.add(filterPlaceholder, JLayeredPane.POPUP_LAYER);
