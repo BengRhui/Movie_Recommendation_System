@@ -247,11 +247,17 @@ public class MaintenancePage implements KeyListener, MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+            logOut.setCursor(Cursor.getDefaultCursor());
+            logoutLogo.setCursor(Cursor.getDefaultCursor());
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+            logOut.setCursor(Cursor.getDefaultCursor());
+            logoutLogo.setCursor(Cursor.getDefaultCursor());
+        }
     }
 }
