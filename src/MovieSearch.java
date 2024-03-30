@@ -187,7 +187,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                 } else if (currentLanguage.equals("Malay")) {
                     popUpLoading.setTitle("Sedang diproses");
                 }
-                
+
                 popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 popUpLoading.setLayout(new FlowLayout());
                 popUpLoading.setSize(300, 50);
