@@ -1,25 +1,26 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class MaintenancePage implements KeyListener, MouseListener {
     static JFrame frame;
-    static JLabel feedbackSummaryButton, systemMaintenance, logo, logoutLogo, logOut, datasetManagement, backgroundImage,
+    static JLabel feedbackSummaryButton, systemMaintenance ,mainTitle, logo, logoutLogo, logOut, datasetManagement, backgroundImage,
             movieDataset, recommendDataset, ratingDataset, movieLabel, recommendLabel, ratingLabel, rightTitle, emailLabel, passwordLabel, rePasswordLabel;
     static JPanel backgroundPanel, linePanel;
     static JTextField emailText, passwordText, rePasswordText;
     static JLayeredPane layer;
     static JButton movieDownload, movieUpdate, recommendDownload, recommendUpdate, ratingDownload, ratingUpdate, resetButton;
     public static void main(String[] args){
-        frame = new JFrame("Feedback Summary");
+        frame = new JFrame("System Maintenance");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1366, 768);
         frame.setLayout(null);
         frame.setResizable(false);
+
+        mainTitle = new JLabel("<html>ABC Movie<br>Recommender<html>");
+        mainTitle.setFont(new Font("Arial",Font.BOLD,20));
+        mainTitle.setBounds(80,20,150,100);
 
         logo = new JLabel();
         logo.setIcon(new ImageIcon("src/LogoAdmin.jpg"));
@@ -32,10 +33,12 @@ public class MaintenancePage implements KeyListener, MouseListener {
         feedbackSummaryButton = new JLabel("Feedback Summary");
         feedbackSummaryButton.setFont(new Font("Arial",Font.PLAIN,20));
         feedbackSummaryButton.setBounds(30,50,200,150);
+        feedbackSummaryButton.addMouseListener(new FeedbackSummaryPage());
 
         systemMaintenance = new JLabel("System Maintenance");
         systemMaintenance.setFont(new Font("Arial",Font.PLAIN,20));
         systemMaintenance.setBounds(30,110,200,150);
+        systemMaintenance.addMouseListener(new MaintenancePage());
 
         logOut = new JLabel("Logout");
         logOut.setFont(new Font("Arial",Font.BOLD,20));
@@ -58,8 +61,6 @@ public class MaintenancePage implements KeyListener, MouseListener {
         movieDownload.setBounds(400,200,220,80);
         movieDownload.setBackground(Color.WHITE);
         movieDownload.setBorder(new LineBorder(Color.BLACK,2));
-//        movieDownload.addActionListener(this);
-//        movieDownload.addMouseListener(this);
 
         movieUpdate = new JButton("Update");
         movieUpdate.setFont(new Font("Avenir", Font.PLAIN,27));
@@ -188,15 +189,22 @@ public class MaintenancePage implements KeyListener, MouseListener {
         backgroundPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
         backgroundPanel.setSize(frame.getWidth()/4,frame.getHeight());
 
+        backgroundPanel.add(mainTitle);
         backgroundPanel.add(feedbackSummaryButton);
         backgroundPanel.add(systemMaintenance);
         backgroundPanel.add(logOut);
         backgroundPanel.add(logo);
         backgroundPanel.add(logoutLogo);
 
+        feedbackSummaryButton.addMouseListener(new MaintenancePage());
+        systemMaintenance.addMouseListener(new MaintenancePage());
+
         frame.add(backgroundPanel);
         frame.add(layer);
         frame.setVisible(true);
+    }
+
+    private void setVisible(boolean b) {
     }
 
 
@@ -217,8 +225,15 @@ public class MaintenancePage implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        if (e.getSource() == feedbackSummaryButton) {
+            new FeedbackSummaryPage();
+            frame.dispose();
+        } else if (e.getSource() == systemMaintenance) {
+            new MaintenancePage();
+            frame.dispose();
+        }
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {

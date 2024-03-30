@@ -6,12 +6,12 @@ import java.awt.event.MouseListener;
 public class FeedbackSummaryPage implements MouseListener {
     static JFrame frame;
     static JPanel backgroundPanel, rightPanel, rightPanel2, rightPanel3;
-    static JLabel mainTitle, feedbackSummaryButton, systemMaintenance, logOut, feedbackSummary, recentFeedback, rightRating, rightRating2, rightRating3;
+    static JLabel mainTitle, feedbackSummaryButton, systemMaintenance, logOut, feedbackSummary, recentFeedback, rightRating, rightRating2, rightRating3, filterImage;
     static JLabel backgroundImage, graphImage, logo,logoutLogo,  rightContent, rightContent2, rightContent3;
 
     static JLayeredPane layer;
 
-    public static void main(String[] args){
+    public FeedbackSummaryPage (){
 
 
         frame = new JFrame("Feedback Summary");
@@ -27,6 +27,7 @@ public class FeedbackSummaryPage implements MouseListener {
         logoutLogo = new JLabel();
         logoutLogo.setIcon(new ImageIcon("src/Logoutadmin Logo.png"));
         logoutLogo.setBounds(10,640,65,65);
+        logoutLogo.addMouseListener(this);
 
         mainTitle = new JLabel("<html>ABC Movie<br>Recommender<html>");
         mainTitle.setFont(new Font("Arial",Font.BOLD,20));
@@ -35,14 +36,17 @@ public class FeedbackSummaryPage implements MouseListener {
         feedbackSummaryButton = new JLabel("Feedback Summary");
         feedbackSummaryButton.setFont(new Font("Arial",Font.PLAIN,20));
         feedbackSummaryButton.setBounds(30,50,200,150);
+        feedbackSummaryButton.addMouseListener(this);
 
         systemMaintenance = new JLabel("System Maintenance");
         systemMaintenance.setFont(new Font("Arial",Font.PLAIN,20));
         systemMaintenance.setBounds(30,110,200,150);
+        systemMaintenance.addMouseListener(new MaintenancePage());
 
         logOut = new JLabel("Logout");
         logOut.setFont(new Font("Arial",Font.BOLD,20));
         logOut.setBounds(70,600,150,150);
+        logOut.addMouseListener(this);
 
         feedbackSummary = new JLabel("Feedback Summary");
         feedbackSummary.setFont(new Font("Arial",Font.BOLD,30));
@@ -52,7 +56,28 @@ public class FeedbackSummaryPage implements MouseListener {
         graphImage.setIcon(new ImageIcon("src/adminGraph.png"));
         graphImage.setBounds(400,120,400,550);
 
+        filterImage = new JLabel();
+        filterImage.setIcon(new ImageIcon("src/filter.png"));
+        filterImage.setBounds(1250,20,65,65);
+        filterImage.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new FilterTimePage();
+                frame.dispose();
+            }
 
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
         backgroundImage = new JLabel();
         backgroundImage.setIcon(new ImageIcon("src/adminBackground.png"));
         backgroundImage.setBounds(0, 0, frame.getWidth(), frame.getHeight());
@@ -113,16 +138,12 @@ public class FeedbackSummaryPage implements MouseListener {
         layer.add(rightPanel2, JLayeredPane.PALETTE_LAYER);
         layer.add(rightPanel3, JLayeredPane.PALETTE_LAYER);
         layer.add(recentFeedback, JLayeredPane.PALETTE_LAYER);
+        layer.add(filterImage, JLayeredPane.PALETTE_LAYER);
 
         backgroundPanel = new JPanel(null);
         backgroundPanel.setBackground(Color.WHITE);
         backgroundPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
         backgroundPanel.setSize(frame.getWidth()/4,frame.getHeight());
-
-
-
-
-
 
         backgroundPanel.add(mainTitle);
         backgroundPanel.add(feedbackSummaryButton);
@@ -136,19 +157,24 @@ public class FeedbackSummaryPage implements MouseListener {
         frame.add(layer);
         frame.setVisible(true);
 
+    }
 
-
-
-
-
-
-
-
+    public static void main(String[] args){
+        new FeedbackSummaryPage();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getSource() == feedbackSummaryButton) {
+            new FeedbackSummaryPage();
+            frame.dispose();
+        } else if (e.getSource() == systemMaintenance) {
+            new MaintenancePage();
+            frame.dispose();
+        }
 
+        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+        }
     }
 
     @Override
@@ -163,11 +189,23 @@ public class FeedbackSummaryPage implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+            logOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            logoutLogo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent e)   {
+        if (e.getSource() == logOut || e.getSource() == logoutLogo) {
+            logOut.setCursor(Cursor.getDefaultCursor());
+            logoutLogo.setCursor(Cursor.getDefaultCursor());
+        }
+    }
 
+
+
+    public void setVisible(boolean b) {
     }
 }
