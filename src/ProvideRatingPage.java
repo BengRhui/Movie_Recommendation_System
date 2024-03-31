@@ -24,7 +24,42 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
         frame.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - frame.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - frame.getHeight()) / 2);
         frame.setLayout(null);
         frame.setResizable(false);
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
 
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                UserFrame.frame.setEnabled(true);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
 
         background = new JPanel();
         background.setBackground(Color.WHITE);

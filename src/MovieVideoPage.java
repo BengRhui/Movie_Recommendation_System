@@ -16,18 +16,20 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
     JPanel holder, shadow, playPanel;
     JLabel frameTitle, arrowPlaceholder, playPlaceholder, playPrompt, synopsisTitle, favouritesPrompt;
     JButton rateButton;
-    static String URL, userID, currentLanguage;
+    static String URL, userID, currentLanguage, previousFrame;
     static int movieID;
+    boolean buttonTriggered = false;
 
 
-    MovieVideoPage(double frameHorizontal, double frameVertical, int movieID, String userID) throws IOException {
+    MovieVideoPage(double frameHorizontal, double frameVertical, int movieID, String userID, String previousFrame) throws IOException {
+
+        MovieVideoPage.previousFrame = previousFrame;
 
         if (UserFrame.frame != null) {
             currentLanguage = UserFrame.currentLanguage;
         } else if (GuestFrame.frame != null) {
             currentLanguage = GuestFrame.currentLanguage;
         }
-
 
         MovieVideoPage.userID = userID;
         MovieVideoPage.movieID = movieID;
@@ -148,6 +150,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                         }
                         UserFrame.frame.dispose();
                         new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);
+                        buttonTriggered = true;
                         UserFrame.frame.setVisible(false);
                     } else {
                         Favourite.addFavouriteToList(userID, String.valueOf(movieID));
@@ -159,6 +162,7 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                         }
                         UserFrame.frame.dispose();
                         new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);
+                        buttonTriggered = true;
                         UserFrame.frame.setVisible(false);
                     }
                 }
@@ -256,10 +260,19 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
         if (e.getSource() == arrowPlaceholder) {
             if (userID != null) {
                 UserFrame.overallLayer.remove(UserFrame.historyLayer);
-                UserFrame.overallLayer.add(new WatchHistory(userID), "History");
+                UserFrame.historyLayer = new WatchHistory(userID);
+                UserFrame.overallLayer.add(UserFrame.historyLayer, "History");
+                UserFrame.historyLayer.revalidate();
+                UserFrame.historyLayer.repaint();
+
                 UserFrame.currentLanguage = currentLanguage;
                 UserFrame.frame.setLocation(frame.getX(), frame.getY());
                 UserFrame.frame.setVisible(true);
+
+                if (previousFrame.equals("History") && !buttonTriggered) {
+                    UserFrame.cardLayout.show(UserFrame.overallLayer, "History");
+                }
+
             } else {
                 GuestFrame.frame.setLocation(frame.getX(), frame.getY());
                 GuestFrame.frame.setVisible(true);

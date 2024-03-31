@@ -21,6 +21,8 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
 
         if (GuestFrame.frame != null) {
             currentLanguage = GuestFrame.currentLanguage;
+        } else {
+            currentLanguage = "English";
         }
 
         BufferedReader rd = new BufferedReader(new FileReader("textfile/customerAccount.txt"));
@@ -265,9 +267,11 @@ public class SignUp implements ActionListener, MouseListener, KeyListener  {
     public void mouseReleased(MouseEvent e) {
         if (e.getSource() == arrowPlaceholder) {
             if (lastFrame.equals("Login")) {
+                Login.frame.setLocation(frame.getX(), frame.getY());
                 Login.frame.setVisible(true);
                 frame.dispose();
             } else if (lastFrame.equals("Guest")) {
+                GuestFrame.frame.setLocation(frame.getX(), frame.getY());
                 GuestFrame.frame.setVisible(true);
                 frame.dispose();
             }

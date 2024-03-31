@@ -22,7 +22,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
     JFrame popUpLoading;
     JPanel container;
     CardLayout cardLayout = new CardLayout();
-    static JLabel title, previous, next;
+    static JLabel title, previous, next, name;
     int currentDisplay = 0, numberOfPages;
     static String currentLanguage = "English";
     FavouriteList(String userID) {
@@ -37,7 +37,12 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        title = new JLabel("Your favourite movie list:");
+        title = new JLabel();
+        if (currentLanguage.equals("English")) {
+            title.setText("Your favourite movie list:");
+        } else if (currentLanguage.equals("Malay")) {
+            title.setText("Senarai filem kegemaran anda:");
+        }
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
@@ -47,16 +52,15 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
         Favourite.readToList();
         ArrayList<Favourite> listOfFavourites = Favourite.filterBasedOnID(userID);
 
-
         if (listOfFavourites.isEmpty()) {
             JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
             panel.setBackground(new Color(255, 255, 255, 0));
-            JLabel name = new JLabel();
+            name = new JLabel();
             if (currentLanguage.equals("English")) {
                 name.setText("No favourites yet. Do add some of the movies to our favourite list for easy access.");
             } else if (currentLanguage.equals("Malay")) {
-                name.setText("Tiada senarai kegemaran. Sila tambahkan filem kegemaran anda supaya filem boleh senang diakses.");
+                name.setText("Tiada senarai kegemaran. Sila tambahkan filem kegemaran anda untuk senang diakses.");
             }
             name.setFont(new Font("Avenir", Font.PLAIN, 20));
             panel.add(name);
@@ -128,7 +132,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                             @Override
                             public void mouseReleased(MouseEvent e) {
                                 try {
-                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID);
+                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID, "Favourite");
                                     UserFrame.frame.setVisible(false);
                                 } catch (IOException ex) {
                                     JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -167,7 +171,7 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
                                     try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID);
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), Integer.parseInt(item.movieID), userID, "Favourite");
                                         UserFrame.frame.setVisible(false);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -317,6 +321,9 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
             title.setText("Your favourite movie list:");
+            if (name != null) {
+                name.setText("No favourites yet. Do add some of the movies to our favourite list for easy access.");
+            }
             if (previous != null) {
                 previous.setText("Previous");
             }
@@ -324,8 +331,14 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                 next.setText("Next");
             }
             currentLanguage = "English";
+            UserFrame.frame.revalidate();
+            UserFrame.frame.repaint();
+
         } else if (language.equals("Malay")) {
             title.setText("Senarai filem kegemaran anda:");
+            if (name != null) {
+                name.setText("Tiada senarai kegemaran. Sila tambahkan filem kegemaran anda untuk senang diakses.");
+            }
             if (previous != null) {
                 previous.setText("Sebelumnya");
             }
@@ -333,6 +346,8 @@ public class FavouriteList extends JLayeredPane implements MouseListener {
                 next.setText("Selepasnya");
             }
             currentLanguage = "Malay";
+            UserFrame.frame.repaint();
+            UserFrame.frame.revalidate();
         }
     }
 

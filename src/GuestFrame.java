@@ -232,11 +232,14 @@ public class GuestFrame implements ActionListener, MouseListener {
             if (userExit == JOptionPane.YES_OPTION) {
                 try {
                     new Login(frame.getX(), frame.getY());
+                    currentLanguage = "English";
                     frame.dispose();
+                    frame = null;
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "System error. Please inspect the system.");
                 }
             }
+
         } else if (e.getSource() == changeLanguageLabel || e.getSource() == changeLanguagePlaceholder) {
             String[] language = {"English", "Malay"};
             String languageChoice = currentLanguage;

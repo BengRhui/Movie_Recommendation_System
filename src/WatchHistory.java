@@ -9,7 +9,7 @@ import java.util.*;
 
 public class WatchHistory extends JLayeredPane {
 
-    static JLabel title;
+    static JLabel title, name;
     static String currentLanguage;
 
     WatchHistory(String userID) {
@@ -32,77 +32,98 @@ public class WatchHistory extends JLayeredPane {
         this.add(title, JLayeredPane.PALETTE_LAYER);
 
         ArrayList<History> currentHistoryList = History.filterHistoryFromID(userID);
-        currentHistoryList.sort(Comparator.comparing(History::getTime));
 
-        JPanel panel = new JPanel(new FlowLayout());
-        panel.setBackground(new Color(255, 255, 255, 0));
-        panel.setLocation(title.getX(), title.getY() + title.getHeight() + 10);
-        panel.setSize(850, 570);
-
-        int recordCount = 0;
-
-        for (History history: currentHistoryList.reversed()) {
-            JPanel subPanel = new JPanel(null);
-            subPanel.setPreferredSize(new Dimension(850, 30));
-
-            if (recordCount % 2 == 0) {
-                subPanel.setBackground(Color.WHITE);
-            } else {
-                subPanel.setBackground(new Color(255, 255, 255, 0));
+        if (currentHistoryList.isEmpty()) {
+            JPanel emptyText = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            emptyText.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
+            emptyText.setBackground(new Color(255, 255, 255, 0));
+            name = new JLabel();
+            if (currentLanguage.equals("English")) {
+                name.setText("No history. Do watch some movies and they'll be automatically added here.");
+            } else if (currentLanguage.equals("Malay")) {
+                name.setText("Tiada sejarah menonton. Sila tonton filem supaya mereka akan ditambahkan di sini.");
             }
+            name.setFont(new Font("Avenir", Font.PLAIN, 20));
+            emptyText.add(name);
+            add(emptyText, PALETTE_LAYER);
 
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-            String formattedTime = format.format(history.time.atZone(ZoneId.of("Asia/Kuala_Lumpur")));
+        } else {
 
-            JLabel timePlaceholder = new JLabel("●  " + formattedTime);
-            timePlaceholder.setFont(new Font("Avenir", Font.PLAIN, 16));
-            timePlaceholder.setBounds(20, 0, 180, 30);
+            currentHistoryList.sort(Comparator.comparing(History::getTime));
 
-            JLabel titleName = new JLabel(Movies.getNameFromMovieId(String.valueOf(history.movieID)));
-            titleName.setFont(new Font("Avenir", Font.PLAIN, 16));
-            titleName.setBounds(200, 0, 600, 30);
+            JPanel panel = new JPanel(new FlowLayout());
+            panel.setBackground(new Color(255, 255, 255, 0));
+            panel.setLocation(title.getX(), title.getY() + title.getHeight() + 10);
+            panel.setSize(850, 570);
 
-            titleName.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
+            int recordCount = 0;
 
+            for (History history : currentHistoryList.reversed()) {
+                JPanel subPanel = new JPanel(null);
+                subPanel.setPreferredSize(new Dimension(850, 30));
+
+                if (recordCount % 2 == 0) {
+                    subPanel.setBackground(Color.WHITE);
+                } else {
+                    subPanel.setBackground(new Color(255, 255, 255, 0));
                 }
 
-                @Override
-                public void mousePressed(MouseEvent e) {
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                String formattedTime = format.format(history.time.atZone(ZoneId.of("Asia/Kuala_Lumpur")));
 
-                }
+                JLabel timePlaceholder = new JLabel("●  " + formattedTime);
+                timePlaceholder.setFont(new Font("Avenir", Font.PLAIN, 16));
+                timePlaceholder.setBounds(20, 0, 180, 30);
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    try {
-                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), history.movieID, userID);
-                        UserFrame.frame.setVisible(false);
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Error with system. Please inspect.");
+                JLabel titleName = new JLabel(Movies.getNameFromMovieId(String.valueOf(history.movieID)));
+                titleName.setFont(new Font("Avenir", Font.PLAIN, 16));
+                titleName.setBounds(200, 0, 600, 30);
+
+                titleName.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
                     }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        try {
+                            new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), history.movieID, userID, "History");
+                            UserFrame.frame.setVisible(false);
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "Error with system. Please inspect.");
+                        }
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        titleName.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        titleName.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    }
+                });
+
+                subPanel.add(timePlaceholder);
+                subPanel.add(titleName);
+
+                panel.add(subPanel);
+                if (recordCount == 18) {
+                    break;
+                } else {
+                    recordCount++;
                 }
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    titleName.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    titleName.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                }
-            });
-
-            subPanel.add(timePlaceholder);
-            subPanel.add(titleName);
-
-            panel.add(subPanel);
-            if (recordCount == 18) {
-                break;
-            } else {
-                recordCount++;
             }
+
+            add(panel, JLayeredPane.PALETTE_LAYER);
         }
 
         if (currentLanguage.equals("English")) {
@@ -111,14 +132,20 @@ public class WatchHistory extends JLayeredPane {
             title.setText("Filem yang ditonton sebelum ini:");
         }
 
-        this.add(panel, JLayeredPane.PALETTE_LAYER);
+
     }
 
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
             title.setText("Movies watched previously:");
+            if (name != null) {
+                name.setText("No history. Do watch some movies and they'll be automatically added here.");
+            }
         } else if (language.equals("Malay")) {
             title.setText("Filem yang ditonton sebelum ini:");
+            if (name != null) {
+                name.setText("Tiada sejarah menonton. Sila tonton filem supaya mereka akan ditambahkan di sini.");
+            }
         }
     }
 }

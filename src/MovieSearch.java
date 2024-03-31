@@ -123,6 +123,18 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == searchLogoPlaceholder) {
 
+            cardLayout.show(container, "card0");
+            if (container.getComponentCount() > 0) {
+                container.removeAll();
+                this.remove(container);
+            }
+            if (next != null) {
+                this.remove(next);
+            }
+            if (previous != null) {
+                this.remove(previous);
+            }
+
             container.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 30, 810, 450);
 
             String search = textField.getText().strip();
@@ -149,10 +161,13 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             if (initialSize == 0) {
 
                 if (panel != null) {
-                    container.removeAll();
-                    this.remove(container);
-                    this.remove(next);
-                    this.remove(previous);
+
+                    if (next != null) {
+                        this.remove(next);
+                    }
+                    if (previous != null) {
+                        this.remove(previous);
+                    }
                     this.repaint();
                     this.revalidate();
                 }
@@ -204,6 +219,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
                     panel = new JPanel(new GridLayout(2, 5, 10, 10));
                     panel.setBackground(new Color(255, 255, 255, 0));
+
                     int count = 0;
 
                     while (iteratorList.hasNext() && count < 10) {
@@ -244,7 +260,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
                                     try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID);
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
                                         UserFrame.frame.setVisible(false);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -284,10 +300,10 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                                     public void mouseReleased(MouseEvent e) {
                                         try {
                                             if (userID != null) {
-                                                new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID);
+                                                new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
                                                 UserFrame.frame.setVisible(false);
                                             } else {
-                                                new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, null);
+                                                new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, null, "Search");
                                                 GuestFrame.frame.setVisible(false);
                                             }
                                         } catch (IOException ex) {

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Login implements ActionListener, MouseListener {
 
@@ -25,6 +26,10 @@ public class Login implements ActionListener, MouseListener {
 
         Admin.readAdminFromFile();
         adminList = Admin.overallAdmin;
+
+        username.clear();
+        password.clear();
+        userID.clear();
 
         BufferedReader rd = new BufferedReader(new FileReader("textfile/customerAccount.txt"));
 
@@ -172,7 +177,7 @@ public class Login implements ActionListener, MouseListener {
             loginButton.doClick();
         }
         if (e.getSource() == loginButton) {
-            String inputtedEmail = emailInput.getText();
+            String inputtedEmail = emailInput.getText().strip().toLowerCase();
             char[] passwordList = passwordInput.getPassword();
 
             StringBuilder inputtedPassword = new StringBuilder();

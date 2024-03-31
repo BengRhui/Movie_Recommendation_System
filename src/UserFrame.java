@@ -9,11 +9,11 @@ public class UserFrame implements ActionListener, MouseListener {
     static JFrame frame;
     JLabel logoPlaceholder, homePageLabel, movieSearchLabel, favouriteListLabel, watchHistoryLabel, reportIssueLabel,
             reportIssuePlaceholder, changeLanguageLabel, changeLanguagePlaceholder, logoutLabel, logoutPlaceholder, systemName;
-    JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel;
+    static JPanel sideBarPanel, homePagePanel, movieSearchPanel, favouriteListPanel, watchHistoryPanel;
     static JPanel overallLayer;
     JLayeredPane overallHomePagePanel, overallMovieSearchPanel, overallFavouriteListPanel, overallWatchHistoryPanel;
     static JLayeredPane homeLayer, favouriteListLayer, searchLayer, historyLayer;
-    Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
+    public static Color sideBarColour = new Color(225, 205, 187), brighterSideBarColour = new Color(249, 244, 240);
     static CardLayout cardLayout = new CardLayout();
     static String currentLanguage = "English";
 
@@ -306,6 +306,7 @@ public class UserFrame implements ActionListener, MouseListener {
                 try {
                     new Login(frame.getX(), frame.getY());
                     frame.dispose();
+                    frame = null;
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "System error. Please inspect the system.");
                 }

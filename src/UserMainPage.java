@@ -22,7 +22,9 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
     JFrame popUpLoading;
     JPanel container, panel;
     CardLayout cardLayout = new CardLayout();
-    JLabel previous, next;
+    JLabel previous;
+    JLabel next;
+    static JLabel name;
     static JLabel title;
     static String currentLanguage = "English";
     int currentDisplay = 0, numberOfPages;
@@ -38,7 +40,12 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
         backgroundPlaceholder.setBounds(0, 0, 970, 768);
         this.add(backgroundPlaceholder, JLayeredPane.DEFAULT_LAYER);
 
-        title = new JLabel("Top picks we recommend:");
+        title = new JLabel();
+        if (currentLanguage.equals("English")) {
+            title.setText("Top picks we recommend:");
+        } else if (currentLanguage.equals("Malay")) {
+            title.setText("Filem yang kami cadangkan:");
+        }
         title.setFont(new Font("Advent Pro", Font.BOLD, 40));
         title.setBounds(50, 30, 800, 100);
         title.setHorizontalAlignment(JLabel.LEFT);
@@ -58,14 +65,14 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                 }
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error ");
+            JOptionPane.showMessageDialog(null, "Error in retrieving from recommendation.txt. Inspect text file.");
         }
 
         if (listOfRecommendation.isEmpty()) {
             panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             panel.setBounds(title.getX(), title.getY() + title.getHeight(), 800, 200);
             panel.setBackground(new Color(255, 255, 255, 0));
-            JLabel name = new JLabel();
+            name = new JLabel();
             if (currentLanguage.equals("English")) {
                 name.setText("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
             } else if (currentLanguage.equals("Malay")) {
@@ -140,7 +147,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                             @Override
                             public void mouseReleased(MouseEvent e) {
                                 try {
-                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID);
+                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID, "Home");
                                     UserFrame.frame.setVisible(false);
                                 } catch (IOException ex) {
                                     JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -179,7 +186,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
                                 @Override
                                 public void mouseReleased(MouseEvent e) {
                                     try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID);
+                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieID, userID, "Home");
                                         UserFrame.frame.setVisible(false);
                                     } catch (IOException ex) {
                                         JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
@@ -348,10 +355,20 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
     public static void changeLanguage(String language) {
         if (language.equals("English")) {
             title.setText("Top picks we recommend:");
+            if (name != null) {
+                name.setText("No recommendation yet. Please rate at least 10 movies to obtain recommendations.");
+            }
             currentLanguage = language;
+            UserFrame.frame.repaint();
+            UserFrame.frame.revalidate();
         } else if (language.equals("Malay")) {
             title.setText("Filem yang kami cadangkan:");
+            if (name != null) {
+                name.setText("Tiada cadangan. Sila menilai sekurang-kurangnya 10 filem untuk mendapatkan cadangan.");
+            }
             currentLanguage = language;
+            UserFrame.frame.repaint();
+            UserFrame.frame.revalidate();
         }
     }
 

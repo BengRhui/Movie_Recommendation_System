@@ -6,3 +6,5 @@
 1711727426;4;Good system.
 1711728516;5;Excellent system! The design is simple and nice, with all the necessary functions available! Well done to the team.
 1711792931;4;A very interesting system that can be improved by adding more functionalities to the system.
+1711873794;3;Quite an interesting system to use. Mantap!
+1711874506;5;No issue
