@@ -19,6 +19,7 @@ import java.util.Map;
 
 public class UserMainPage extends JLayeredPane implements MouseListener {
 
+    JFrame popUpLoading;
     JPanel container, panel;
     CardLayout cardLayout = new CardLayout();
     JLabel previous, next;
@@ -82,7 +83,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
 
             Iterator<Recommendation> iteratorList = listOfRecommendation.iterator();
 
-            JFrame popUpLoading = new JFrame();
+            popUpLoading = new JFrame();
 
             if (currentLanguage.equals("English")) {
                 popUpLoading.setTitle("Loading");
@@ -93,7 +94,7 @@ public class UserMainPage extends JLayeredPane implements MouseListener {
             popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             popUpLoading.setLayout(new FlowLayout());
             popUpLoading.setSize(300, 50);
-            popUpLoading.setLocationRelativeTo(null);
+            popUpLoading.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
             popUpLoading.setVisible(true);
 
             int pageCount = 0;

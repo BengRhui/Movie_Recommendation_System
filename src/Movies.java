@@ -142,7 +142,7 @@ public class Movies {
                 return null;
             } else {
                 output.delete(0, indexOfOverview);
-                int indexOfLastChar = output.indexOf("\"");
+                int indexOfLastChar = output.indexOf("\",\"popularity");
                 output.delete(indexOfLastChar, output.length());
                 plot = output.toString();
             }

@@ -319,7 +319,7 @@ public class UserFrame implements ActionListener, MouseListener {
             String languageChoice = currentLanguage;
             if (currentLanguage.equals("English")) {
                 languageChoice = (String) JOptionPane.showInputDialog(
-                        null,
+                        frame,
                         "Choose the preferred language:",
                         "Select Language",
                         JOptionPane.PLAIN_MESSAGE,
@@ -328,7 +328,7 @@ public class UserFrame implements ActionListener, MouseListener {
                         currentLanguage);
             } else if (currentLanguage.equals("Malay")) {
                 languageChoice = (String) JOptionPane.showInputDialog(
-                        null,
+                        frame,
                         "Pilih bahasa pilihan anda:",
                         "Pilih Bahasa",
                         JOptionPane.PLAIN_MESSAGE,

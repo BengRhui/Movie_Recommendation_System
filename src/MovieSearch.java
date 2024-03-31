@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 public class MovieSearch extends JLayeredPane implements KeyListener, MouseListener {
 
+    JFrame popUpLoading;
     CardLayout cardLayout = new CardLayout();
     JLabel backgroundPlaceholder, searchLogoPlaceholder, label, filterPlaceholder;
     static JLabel title, promptText, previous, next;
@@ -180,7 +181,7 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                     iteratorList = filteredList.iterator();
                 }
 
-                JFrame popUpLoading = new JFrame();
+                popUpLoading = new JFrame();
 
                 if (currentLanguage.equals("English")) {
                     popUpLoading.setTitle("Loading");
@@ -191,7 +192,11 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                 popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 popUpLoading.setLayout(new FlowLayout());
                 popUpLoading.setSize(300, 50);
-                popUpLoading.setLocationRelativeTo(null);
+                if (UserFrame.frame != null) {
+                    popUpLoading.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
+                } else if (GuestFrame.frame != null) {
+                    popUpLoading.setLocation(GuestFrame.frame.getX() + (GuestFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, GuestFrame.frame.getY() + (GuestFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
+                }
                 popUpLoading.setVisible(true);
 
                 int pageCount = 0;
