@@ -1,10 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.InputMismatchException;
 
 public class MaintenancePage extends JLayeredPane implements MouseListener, ActionListener {
     static JLabel datasetManagement, backgroundImage, movieDataset, recommendDataset, ratingDataset, movieLabel,
@@ -13,10 +13,6 @@ public class MaintenancePage extends JLayeredPane implements MouseListener, Acti
     static JTextField emailText;
     static JPasswordField passwordText, rePasswordText;
     static JButton movieDownload, movieUpdate, recommendDownload, recommendUpdate, ratingDownload, ratingUpdate, resetButton;
-
-    public static void main(String[] args) {
-        new AdminFrame(100, 100);
-    }
 
     public MaintenancePage(){
 
@@ -244,7 +240,7 @@ public class MaintenancePage extends JLayeredPane implements MouseListener, Acti
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == resetButton) {
             try {
-                String inputEmail = emailText.getText();
+                String inputEmail = emailText.getText().strip().toLowerCase();
                 Login.userID.clear();
                 Login.username.clear();
                 Login.password.clear();
@@ -261,25 +257,141 @@ public class MaintenancePage extends JLayeredPane implements MouseListener, Acti
                     Login.password.add(array[2]);
                 }
 
-                for (String username: Login.userID) {
-                    if (username.equals(inputEmail)) {
-
+                int customerIndex = -1;
+                for (int i = 0; i < Login.userID.size(); i ++) {
+                    if (inputEmail.equals(Login.username.get(i))) {
+                        customerIndex = i;
+                        break;
                     }
                 }
+
+                boolean adminFound = false;
+                if (customerIndex == -1) {
+                    Admin.readAdminFromFile();
+                    for (Admin admin : Admin.overallAdmin) {
+                        if (admin.adminEmail.equals(inputEmail)) {
+                            adminFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (customerIndex == -1 && !adminFound) {
+                    throw new IOException();
+                }
+
+                StringBuilder password = new StringBuilder();
+                StringBuilder retypePassword = new StringBuilder();
+
+                if (passwordText.getPassword().length < 4 || passwordText.getPassword().length > 20) {
+                    throw new NumberFormatException();
+                }
+
+                for (char character: passwordText.getPassword()) {
+                    password.append(character);
+                }
+
+                for (char character: rePasswordText.getPassword()) {
+                    retypePassword.append(character);
+                }
+
+                if (password.compareTo(retypePassword) != 0) {
+                    throw new InputMismatchException();
+                }
+
+                if (customerIndex != -1) {
+                    Login.password.set(customerIndex, password.toString());
+                    BufferedWriter write = new BufferedWriter(new FileWriter("textfile/customerAccount.txt"));
+                    for (int i = 0; i < Login.userID.size(); i ++) {
+                        write.write(Login.userID.get(i) + ";" + Login.username.get(i) + ";" + Login.password.get(i));
+                        write.newLine();
+                    }
+                    write.close();
+                    JOptionPane.showMessageDialog(AdminFrame.frame, "Customer password updated successful.", "Reset Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                } else {
+                    for (Admin admin: Admin.overallAdmin) {
+                        if (admin.adminEmail.equals(inputEmail)) {
+                            admin.adminPassword = password.toString();
+                        }
+                    }
+                    Admin.writeToAdminFile();
+                    JOptionPane.showMessageDialog(AdminFrame.frame, "Admin password updated successful.", "Reset Successful", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                }
+
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(AdminFrame.frame, "Email is not found in the system", "Error Email", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(AdminFrame.frame, "Password does not fulfill requirement. Please try again.", "Password Error", JOptionPane.ERROR_MESSAGE);
+            } catch (InputMismatchException ex) {
+                JOptionPane.showMessageDialog(AdminFrame.frame, "Password does not match the retyped password. Please try again.", "Password Error", JOptionPane.ERROR_MESSAGE);
             }
+
         } else if (e.getSource() == movieDownload) {
+            DatasetDownloadAndUpload.downloadFiles("Movies.csv");
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html> Movies.csv downloaded successful.<br>" +
+                    "Do note that the file consists of the following attributes:<br>" +
+                    " - Movie ID<br>" +
+                    " - Movie Name<br>" +
+                    " - Released Year<br>" +
+                    " - Movie ID in IMDB<br>" +
+                    " - Movie ID in TMDB<br>" +
+                    " - Movie Genres (up to 5 genres: null is represented with a dash '-')", "Download Successful",
+                    JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
 
         } else if (e.getSource() == movieUpdate) {
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html> Make sure your file is in .CSV format.<br>" +
+                            "Make sure that the file consists of the following attributes:<br>" +
+                            " - Movie ID<br>" +
+                            " - Movie Name<br>" +
+                            " - Released Year<br>" +
+                            " - Movie ID in IMDB<br>" +
+                            " - Movie ID in TMDB<br>" +
+                            " - Movie Genres (up to 5 genres: null is represented with a dash '-')", "Upload Reminder",
+                    JOptionPane.WARNING_MESSAGE);
+
+            DatasetDownloadAndUpload.uploadFiles("Movies.csv");
 
         } else if (e.getSource() == recommendDownload) {
+            DatasetDownloadAndUpload.downloadFiles("recommendation.txt");
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html> recommendation.txt downloaded successful.<br>" +
+                            "Do note that the file consists of the following attributes:<br>" +
+                            " - User ID<br>" +
+                            " - Movie ID<br>" +
+                            " - Rankings", "Download Successful",
+                    JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
 
         } else if (e.getSource() == recommendUpdate) {
 
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html>Make sure your file is in .TXT format.<br>" +
+                            "Make sure that the file consists of the following attributes:<br>" +
+                            " - User ID<br>" +
+                            " - Movie ID<br>" +
+                            " - Rankings", "Upload Reminder",
+                    JOptionPane.WARNING_MESSAGE);
+
+            DatasetDownloadAndUpload.uploadFiles("recommendation.txt");
+
         } else if (e.getSource() == ratingDownload) {
+            DatasetDownloadAndUpload.downloadFiles("ratings.csv");
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html> ratings.csv downloaded successful.<br>" +
+                            "Do note that the file consists of the following attributes:<br>" +
+                            " - User ID<br>" +
+                            " - Movie ID<br>" +
+                            " - Ratings<br>" +
+                            " - Timestamp (in epoch)", "Download Successful",
+                    JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
 
         } else if (e.getSource() == ratingUpdate) {
+
+            JOptionPane.showMessageDialog(AdminFrame.frame, "<html>Make sure your file is in .CSV format.<br>" +
+                            "Make sure that the file consists of the following attributes:<br>" +
+                            " - User ID<br>" +
+                            " - Movie ID<br>" +
+                            " - Ratings<br>" +
+                            " - Timestamp (in epoch)", "Upload Reminder",
+                    JOptionPane.WARNING_MESSAGE);
+
+            DatasetDownloadAndUpload.uploadFiles("ratings.csv");
 
         }
     }
