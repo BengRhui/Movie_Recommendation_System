@@ -154,6 +154,7 @@ public class AdminFrame implements ActionListener, MouseListener {
                 try {
                     new Login(frame.getX(), frame.getY());
                     frame.dispose();
+                    frame = null;
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "System error. Please inspect the system.");
                 }
