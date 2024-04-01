@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 
 public class History {
@@ -21,6 +22,10 @@ public class History {
         this.userID = userID;
         this.movieID = movieID;
         this.time = time;
+    }
+
+    public int getUserID() {
+        return userID;
     }
 
     public static void readHistoryFromFile() {
@@ -42,6 +47,7 @@ public class History {
     }
 
     public static void writeHistoryToFile() {
+        overallHistoryList.sort(Comparator.comparing(History::getUserID));
         try {
             BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/history.txt"));
             for (History history: overallHistoryList) {

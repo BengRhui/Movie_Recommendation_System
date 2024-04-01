@@ -11,3 +11,7 @@
 1711940371;4;An interesting system to use.
 1711940570;4;Not bad. Nice to use.
 1711940653;5;Very nice user interface of the system. I love the design, and the functionalities provided.
+1711940997;4;Sistem yang senang diguna. Semoga lebih banyak fungsi akan ditambahkan ke dalam sistem ini pada masa akan datang.
+1711944163;2;Good
+1711956958;5;Wow Great Movie
+1711957714;5;Wow good system!

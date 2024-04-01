@@ -18,7 +18,10 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
 
     JFrame popUpLoading;
     CardLayout cardLayout = new CardLayout();
-    JLabel backgroundPlaceholder, searchLogoPlaceholder, label, filterPlaceholder;
+    JLabel backgroundPlaceholder;
+    JLabel searchLogoPlaceholder;
+    static JLabel label;
+    JLabel filterPlaceholder;
     static JLabel title, promptText, previous, next;
     JPanel searchBarPlaceholder, container = new JPanel(cardLayout), panel;
     JTextField textField;
@@ -187,7 +190,12 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                         this.revalidate();
                     }
 
-                    label = new JLabel("No results from searches. Please enter another keyword.");
+                    label = new JLabel();
+                    if (currentLanguage.equals("English")) {
+                        label.setText("No results from searches. Please enter another keyword.");
+                    } else if (currentLanguage.equals("Malay")) {
+                        label.setText("Tiada keputusan. Sila cuba kata kunci yang lain.");
+                    }
                     label.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 20, 700, 50);
                     label.setFont(new Font("Avenir", Font.PLAIN, 20));
                     this.add(label, JLayeredPane.MODAL_LAYER);
@@ -527,6 +535,10 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             if (next != null) {
                 next.setText("Next");
             }
+            if (label != null) {
+                label.setText("No results from searches. Please enter another keyword.");
+            }
+
             currentLanguage = "English";
 
         } else if (language.equals("Malay")) {
@@ -537,6 +549,9 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             }
             if (next != null) {
                 next.setText("Selepasnya");
+            }
+            if (label != null) {
+                label.setText("Tiada keputusan. Sila cuba kata kunci yang lain.");
             }
             currentLanguage = "Malay";
         }

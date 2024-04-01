@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.xml.stream.FactoryConfigurationError;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class Favourite {
@@ -14,6 +15,10 @@ public class Favourite {
     public Favourite(String userID, String movieID) {
         this.userID = userID;
         this.movieID = movieID;
+    }
+
+    public String getUserID() {
+        return userID;
     }
 
     public static void readToList() {
@@ -34,6 +39,7 @@ public class Favourite {
     public static void writeFavouriteToFile() {
         try {
             BufferedWriter wr = new BufferedWriter(new FileWriter("textfile/favourite.txt"));
+            overallFavouriteList.sort(Comparator.comparing(Favourite::getUserID));
             for (Favourite fav: overallFavouriteList) {
                 wr.write(fav.userID + ";" + fav.movieID);
                 wr.newLine();
