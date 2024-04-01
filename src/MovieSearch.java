@@ -123,6 +123,11 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == searchLogoPlaceholder) {
 
+            while (currentDisplay != 0) {
+                MouseEvent clickEvent = new MouseEvent(previous, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, previous.getWidth() / 2, previous.getHeight() / 2, 1, false);
+                previous.dispatchEvent(clickEvent);
+            }
+
             cardLayout.show(container, "card0");
             if (container.getComponentCount() > 0) {
                 container.removeAll();
@@ -141,149 +146,123 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
             Movies.appendMovieObject();
             ArrayList<Movies> filteredList = new ArrayList<>();
 
-            for (Movies movie: Movies.movieList) {
-                if (movie.title.toLowerCase().contains(search.toLowerCase())) {
-                    filteredList.add(movie);
+            try {
+
+                if (search.length() < 3) {
+                    throw new NullPointerException();
                 }
-            }
 
-            if (newArrangeChoice != null) {
-                if (newArrangeChoice.equals("A - Z")) {
-                    filteredList.sort(Comparator.comparing(Movies::getTitle));
-                } else if (newArrangeChoice.equals("Z - A")) {
-                    filteredList.sort(Comparator.comparing(Movies::getTitle));
-                    filteredList.reversed();
-                }
-            }
-
-            int initialSize = filteredList.size();
-
-            if (initialSize == 0) {
-
-                if (panel != null) {
-
-                    if (next != null) {
-                        this.remove(next);
+                for (Movies movie : Movies.movieList) {
+                    if (movie.title.toLowerCase().contains(search.toLowerCase())) {
+                        filteredList.add(movie);
                     }
-                    if (previous != null) {
-                        this.remove(previous);
+                }
+
+                if (newArrangeChoice != null) {
+                    if (newArrangeChoice.equals("A - Z")) {
+                        filteredList.sort(Comparator.comparing(Movies::getTitle));
+                    } else if (newArrangeChoice.equals("Z - A")) {
+                        filteredList.sort(Comparator.comparing(Movies::getTitle));
+                        filteredList.reversed();
                     }
-                    this.repaint();
-                    this.revalidate();
                 }
 
-                label = new JLabel("No results from searches. Please enter another keyword.");
-                label.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 20, 700, 50);
-                label.setFont(new Font("Avenir", Font.PLAIN, 20));
-                this.add(label, JLayeredPane.MODAL_LAYER);
+                int initialSize = filteredList.size();
 
-            } else {
+                if (initialSize == 0) {
 
-                if (label != null) {
-                    this.remove(label);
-                }
+                    if (label != null) {
+                        this.remove(label);
+                    }
 
-                container.removeAll();
-                this.remove(container);
+                    if (panel != null) {
 
-                numberOfPages = (int) Math.ceil(initialSize / 10.0);
+                        if (next != null) {
+                            this.remove(next);
+                        }
+                        if (previous != null) {
+                            this.remove(previous);
+                        }
+                        this.repaint();
+                        this.revalidate();
+                    }
 
-                Iterator<Movies> iteratorList;
+                    label = new JLabel("No results from searches. Please enter another keyword.");
+                    label.setBounds(searchBarPlaceholder.getX() + 20, searchBarPlaceholder.getY() + searchBarPlaceholder.getHeight() + 20, 700, 50);
+                    label.setFont(new Font("Avenir", Font.PLAIN, 20));
+                    this.add(label, JLayeredPane.MODAL_LAYER);
 
-                if (newArrangeChoice != null && newArrangeChoice.equals("Z - A")) {
-                    iteratorList = filteredList.reversed().iterator();
                 } else {
-                    iteratorList = filteredList.iterator();
-                }
 
-                popUpLoading = new JFrame();
+                    if (label != null) {
+                        this.remove(label);
+                    }
 
-                if (currentLanguage.equals("English")) {
-                    popUpLoading.setTitle("Loading");
-                } else if (currentLanguage.equals("Malay")) {
-                    popUpLoading.setTitle("Sedang diproses");
-                }
+                    container.removeAll();
+                    this.remove(container);
 
-                popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                popUpLoading.setLayout(new FlowLayout());
-                popUpLoading.setSize(300, 50);
-                if (UserFrame.frame != null) {
-                    popUpLoading.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
-                } else if (GuestFrame.frame != null) {
-                    popUpLoading.setLocation(GuestFrame.frame.getX() + (GuestFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, GuestFrame.frame.getY() + (GuestFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
-                }
-                popUpLoading.setVisible(true);
+                    this.revalidate();
+                    this.repaint();
 
-                int pageCount = 0;
-                for (int i = 0; i < numberOfPages; i++) {
+                    numberOfPages = (int) Math.ceil(initialSize / 10.0);
 
-                    panel = new JPanel(new GridLayout(2, 5, 10, 10));
-                    panel.setBackground(new Color(255, 255, 255, 0));
+                    Iterator<Movies> iteratorList;
 
-                    int count = 0;
+                    if (newArrangeChoice != null && newArrangeChoice.equals("Z - A")) {
+                        iteratorList = filteredList.reversed().iterator();
+                    } else {
+                        iteratorList = filteredList.iterator();
+                    }
 
-                    while (iteratorList.hasNext() && count < 10) {
-                        JPanel holder = new JPanel(null);
-                        holder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                    popUpLoading = new JFrame();
 
-                        Movies item = iteratorList.next();
+                    if (currentLanguage.equals("English")) {
+                        popUpLoading.setTitle("Loading");
+                    } else if (currentLanguage.equals("Malay")) {
+                        popUpLoading.setTitle("Sedang diproses");
+                    }
 
-                        String movieName = item.title;
-                        JLabel label = new JLabel("<html>" + movieName + "</html>");
-                        label.setBounds(10, 155, 110, 75);
-                        label.setFont(new Font("Avenir", Font.PLAIN, 14));
-                        label.setVerticalAlignment(JLabel.TOP);
+                    popUpLoading.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    popUpLoading.setLayout(new FlowLayout());
+                    popUpLoading.setSize(300, 50);
+                    if (UserFrame.frame != null) {
+                        popUpLoading.setLocation(UserFrame.frame.getX() + (UserFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, UserFrame.frame.getY() + (UserFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
+                    } else if (GuestFrame.frame != null) {
+                        popUpLoading.setLocation(GuestFrame.frame.getX() + (GuestFrame.frame.getWidth() - popUpLoading.getWidth()) / 2, GuestFrame.frame.getY() + (GuestFrame.frame.getHeight() - popUpLoading.getHeight()) / 2);
+                    }
+                    popUpLoading.setVisible(true);
 
-                        JLabel posterLabel = new JLabel();
-                        posterLabel.setBounds(2, 2, 150, 145);
+                    int pageCount = 0;
+                    for (int i = 0; i < numberOfPages; i++) {
 
-                        String urlText = Movies.getUrlFromMovieId(String.valueOf(item.movieIdInDataset));
+                        panel = new JPanel(new GridLayout(2, 5, 10, 10));
+                        panel.setBackground(new Color(255, 255, 255, 0));
 
-                        assert urlText != null;
-                        if (urlText.equals("null")) {
-                            ImageIcon image = new ImageIcon("asset/No image.png");
-                            Image imageResized = image.getImage();
-                            imageResized = imageResized.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
-                            ImageIcon posterImage = new ImageIcon(imageResized);
-                            posterLabel.setIcon(posterImage);
-                            posterLabel.addMouseListener(new MouseListener() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
+                        int count = 0;
 
-                                }
+                        while (iteratorList.hasNext() && count < 10) {
+                            JPanel holder = new JPanel(null);
+                            holder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
-                                @Override
-                                public void mousePressed(MouseEvent e) {
+                            Movies item = iteratorList.next();
 
-                                }
+                            String movieName = item.title;
+                            JLabel label = new JLabel("<html>" + movieName + "</html>");
+                            label.setBounds(10, 155, 110, 75);
+                            label.setFont(new Font("Avenir", Font.PLAIN, 14));
+                            label.setVerticalAlignment(JLabel.TOP);
 
-                                @Override
-                                public void mouseReleased(MouseEvent e) {
-                                    try {
-                                        new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
-                                        UserFrame.frame.setVisible(false);
-                                    } catch (IOException ex) {
-                                        JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
-                                    }
-                                }
+                            JLabel posterLabel = new JLabel();
+                            posterLabel.setBounds(2, 2, 150, 145);
 
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                                }
+                            String urlText = Movies.getUrlFromMovieId(String.valueOf(item.movieIdInDataset));
 
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-                                    posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                                }
-                            });
-
-                        } else {
-                            try {
-                                URL imageURL = new URI(urlText).toURL();
-                                BufferedImage image = ImageIO.read(imageURL);
-                                Image imageResize = image.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
-                                ImageIcon posterImage = new ImageIcon(imageResize);
+                            assert urlText != null;
+                            if (urlText.equals("null")) {
+                                ImageIcon image = new ImageIcon("asset/No image.png");
+                                Image imageResized = image.getImage();
+                                imageResized = imageResized.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
+                                ImageIcon posterImage = new ImageIcon(imageResized);
                                 posterLabel.setIcon(posterImage);
                                 posterLabel.addMouseListener(new MouseListener() {
                                     @Override
@@ -299,11 +278,11 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                                     @Override
                                     public void mouseReleased(MouseEvent e) {
                                         try {
-                                            if (userID != null) {
+                                            if (UserFrame.frame != null) {
                                                 new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
                                                 UserFrame.frame.setVisible(false);
-                                            } else {
-                                                new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, null, "Search");
+                                            } else if (GuestFrame.frame != null) {
+                                                new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
                                                 GuestFrame.frame.setVisible(false);
                                             }
                                         } catch (IOException ex) {
@@ -321,158 +300,217 @@ public class MovieSearch extends JLayeredPane implements KeyListener, MouseListe
                                         posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                                     }
                                 });
-                            } catch (URISyntaxException | IOException ex) {
-                                JOptionPane.showMessageDialog(null, "Invalid URL for movie " + item.movieIdInDataset);
-                            }
-                        }
 
-                        ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
-
-                        boolean available = false;
-
-                        for (Favourite fav : currentFav) {
-                            if (fav.movieID.equals(String.valueOf(item.movieIdInDataset))) {
-                                available = true;
-                                break;
-                            }
-                        }
-
-                        if (userID != null) {
-                            JLabel bookmarkHolder = new JLabel();
-                            bookmarkHolder.setBounds(120, 155, 25, 35);
-
-                            ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
-                            Image resizeBookmarkedImage = bookmarkedIcon.getImage();
-                            resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
-                            bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
-
-                            ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
-                            Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
-                            resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
-                            notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
-
-                            bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
-
-                            ImageIcon finalBookmarkedIcon = bookmarkedIcon;
-                            ImageIcon finalNotBookmarkedIcon = notBookmarkedIcon;
-                            bookmarkHolder.addMouseListener(new MouseListener() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
-                                    boolean isCurrentlyBookmarked = bookmarkHolder.getIcon() == finalBookmarkedIcon;
-
-                                    if (isCurrentlyBookmarked) {
-                                        Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieIdInDataset));
-                                        bookmarkHolder.setIcon(finalNotBookmarkedIcon);
-                                        if (currentLanguage.equals("English")) {
-                                            JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
-                                        } else if (currentLanguage.equals("Malay")) {
-                                            JOptionPane.showMessageDialog(null, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            } else {
+                                try {
+                                    URL imageURL = new URI(urlText).toURL();
+                                    BufferedImage image = ImageIO.read(imageURL);
+                                    Image imageResize = image.getScaledInstance(150, 145, Image.SCALE_SMOOTH);
+                                    ImageIcon posterImage = new ImageIcon(imageResize);
+                                    posterLabel.setIcon(posterImage);
+                                    posterLabel.addMouseListener(new MouseListener() {
+                                        @Override
+                                        public void mouseClicked(MouseEvent e) {
 
                                         }
 
-                                    } else {
-                                        Favourite.addFavouriteToList(userID, String.valueOf(item.movieIdInDataset));
-                                        bookmarkHolder.setIcon(finalBookmarkedIcon);
-                                        if (currentLanguage.equals("English")) {
-                                            JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
-                                        } else if (currentLanguage.equals("Malay")) {
-                                            JOptionPane.showMessageDialog(null, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                        @Override
+                                        public void mousePressed(MouseEvent e) {
 
                                         }
+
+                                        @Override
+                                        public void mouseReleased(MouseEvent e) {
+                                            try {
+                                                if (userID != null) {
+                                                    new MovieVideoPage(UserFrame.frame.getX(), UserFrame.frame.getY(), item.movieIdInDataset, userID, "Search");
+                                                    UserFrame.frame.setVisible(false);
+                                                } else {
+                                                    new MovieVideoPage(GuestFrame.frame.getX(), GuestFrame.frame.getY(), item.movieIdInDataset, null, "Search");
+                                                    GuestFrame.frame.setVisible(false);
+                                                }
+                                            } catch (IOException ex) {
+                                                JOptionPane.showMessageDialog(null, "Error in opening page. Please check User Main Page.");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void mouseEntered(MouseEvent e) {
+                                            posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                        }
+
+                                        @Override
+                                        public void mouseExited(MouseEvent e) {
+                                            posterLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                        }
+                                    });
+                                } catch (URISyntaxException | IOException ex) {
+                                    JOptionPane.showMessageDialog(null, "Invalid URL for movie " + item.movieIdInDataset);
+                                }
+                            }
+
+                            ArrayList<Favourite> currentFav = Favourite.filterBasedOnID(userID);
+
+                            boolean available = false;
+
+                            for (Favourite fav : currentFav) {
+                                if (fav.movieID.equals(String.valueOf(item.movieIdInDataset))) {
+                                    available = true;
+                                    break;
+                                }
+                            }
+
+                            if (userID != null) {
+                                JLabel bookmarkHolder = new JLabel();
+                                bookmarkHolder.setBounds(120, 155, 25, 35);
+
+                                ImageIcon bookmarkedIcon = new ImageIcon("asset/Bookmark_Yes.png");
+                                Image resizeBookmarkedImage = bookmarkedIcon.getImage();
+                                resizeBookmarkedImage = resizeBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
+                                bookmarkedIcon = new ImageIcon(resizeBookmarkedImage);
+
+                                ImageIcon notBookmarkedIcon = new ImageIcon("asset/Bookmark_No.png");
+                                Image resizeNotBookmarkedImage = notBookmarkedIcon.getImage();
+                                resizeNotBookmarkedImage = resizeNotBookmarkedImage.getScaledInstance(25, 35, Image.SCALE_SMOOTH);
+                                notBookmarkedIcon = new ImageIcon(resizeNotBookmarkedImage);
+
+                                bookmarkHolder.setIcon(available ? bookmarkedIcon : notBookmarkedIcon);
+
+                                ImageIcon finalBookmarkedIcon = bookmarkedIcon;
+                                ImageIcon finalNotBookmarkedIcon = notBookmarkedIcon;
+                                bookmarkHolder.addMouseListener(new MouseListener() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+                                        boolean isCurrentlyBookmarked = bookmarkHolder.getIcon() == finalBookmarkedIcon;
+
+                                        if (isCurrentlyBookmarked) {
+                                            Favourite.removeFavouriteFromList(userID, String.valueOf(item.movieIdInDataset));
+                                            bookmarkHolder.setIcon(finalNotBookmarkedIcon);
+                                            if (currentLanguage.equals("English")) {
+                                                JOptionPane.showMessageDialog(UserFrame.frame, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                            } else if (currentLanguage.equals("Malay")) {
+                                                JOptionPane.showMessageDialog(UserFrame.frame, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+                                            }
+
+                                        } else {
+                                            Favourite.addFavouriteToList(userID, String.valueOf(item.movieIdInDataset));
+                                            bookmarkHolder.setIcon(finalBookmarkedIcon);
+                                            if (currentLanguage.equals("English")) {
+                                                JOptionPane.showMessageDialog(UserFrame.frame, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                                            } else if (currentLanguage.equals("Malay")) {
+                                                JOptionPane.showMessageDialog(UserFrame.frame, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+
+                                            }
+                                        }
+
+                                        UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
+                                        UserFrame.overallLayer.add(new FavouriteList(userID), "Favourite");
+                                        UserFrame.overallLayer.remove(UserFrame.homeLayer);
+                                        UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
                                     }
 
-                                    UserFrame.overallLayer.remove(UserFrame.favouriteListLayer);
-                                    UserFrame.overallLayer.add(new FavouriteList(userID), "Favourite");
-                                    UserFrame.overallLayer.remove(UserFrame.homeLayer);
-                                    UserFrame.overallLayer.add(new UserMainPage(userID), "Home");
-                                }
+                                    @Override
+                                    public void mousePressed(MouseEvent e) {
 
-                                @Override
-                                public void mousePressed(MouseEvent e) {
+                                    }
 
-                                }
+                                    @Override
+                                    public void mouseReleased(MouseEvent e) {
 
-                                @Override
-                                public void mouseReleased(MouseEvent e) {
+                                    }
 
-                                }
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+                                        bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                                    }
 
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-                                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                                }
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+                                        bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                    }
+                                });
+                                holder.add(bookmarkHolder);
+                            }
 
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-                                    bookmarkHolder.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                                }
-                            });
-                            holder.add(bookmarkHolder);
+                            holder.setBackground(Color.WHITE);
+                            holder.add(label);
+                            holder.add(posterLabel);
+                            panel.add(holder);
+                            iteratorList.remove();
+                            count++;
                         }
 
-                        holder.setBackground(Color.WHITE);
-                        holder.add(label);
-                        holder.add(posterLabel);
-                        panel.add(holder);
-                        iteratorList.remove();
-                        count++;
+                        panel.setVisible(true);
+                        panel.setOpaque(true);
+
+                        if (i == numberOfPages - 1) {
+                            int remaining = 0;
+                            if (initialSize % 10 != 0) {
+                                remaining = 10 - (initialSize % 10);
+                            }
+                            for (int j = 0; j < remaining; j++) {
+                                JPanel blank = new JPanel();
+                                blank.setBackground(new Color(255, 255, 255, 0));
+                                panel.add(blank);
+                            }
+                        }
+                        container.add(panel, "card" + i);
+                        pageCount = i;
                     }
 
-                    panel.setVisible(true);
-                    panel.setOpaque(true);
+                    popUpLoading.dispose();
 
-                    if (i == numberOfPages - 1) {
-                        int remaining = 0;
-                        if (initialSize % 10 != 0) {
-                            remaining = 10 - (initialSize % 10);
+                    cardLayout.show(container, "card0");
+                    this.add(container, JLayeredPane.MODAL_LAYER);
+
+                    if (pageCount > 0) {
+                        previous = new JLabel("Previous");
+                        previous.setBounds(70, 690, 100, 30);
+                        previous.setFont(new Font("Avenir", Font.PLAIN, 18));
+                        previous.addMouseListener(this);
+                        this.add(previous, JLayeredPane.POPUP_LAYER);
+                        previous.setVisible(false);
+
+                        next = new JLabel("Next");
+                        next.setBounds(780, 690, 100, 30);
+                        next.setHorizontalAlignment(JLabel.RIGHT);
+                        next.setFont(new Font("Avenir", Font.PLAIN, 18));
+                        next.addMouseListener(this);
+                        this.add(next, JLayeredPane.POPUP_LAYER);
+
+                        if (currentLanguage.equals("English")) {
+                            previous.setText("Previous");
+                            next.setText("Next");
+                        } else if (currentLanguage.equals("Malay")) {
+                            previous.setText("Sebelumnya");
+                            next.setText("Selepasnya");
                         }
-                        for (int j = 0; j < remaining; j++) {
-                            JPanel blank = new JPanel();
-                            blank.setBackground(new Color(255, 255, 255, 0));
-                            panel.add(blank);
+
+                    } else {
+                        if (previous != null) {
+                            this.remove(previous);
                         }
+                        if (next != null) {
+                            this.remove(next);
+                        }
+                        this.repaint();
+                        this.revalidate();
                     }
-                    container.add(panel, "card" + i);
-                    pageCount = i;
                 }
-
-                popUpLoading.dispose();
-
-                cardLayout.show(container, "card0");
-                this.add(container, JLayeredPane.MODAL_LAYER);
-
-                if (pageCount > 0) {
-                    previous = new JLabel("Previous");
-                    previous.setBounds(70, 690, 100, 30);
-                    previous.setFont(new Font("Avenir", Font.PLAIN, 18));
-                    previous.addMouseListener(this);
-                    this.add(previous, JLayeredPane.POPUP_LAYER);
-                    previous.setVisible(false);
-
-                    next = new JLabel("Next");
-                    next.setBounds(780, 690, 100, 30);
-                    next.setHorizontalAlignment(JLabel.RIGHT);
-                    next.setFont(new Font("Avenir", Font.PLAIN, 18));
-                    next.addMouseListener(this);
-                    this.add(next, JLayeredPane.POPUP_LAYER);
-
-                    if (currentLanguage.equals("English")) {
-                        previous.setText("Previous");
-                        next.setText("Next");
-                    } else if (currentLanguage.equals("Malay")) {
-                        previous.setText("Sebelumnya");
-                        next.setText("Selepasnya");
+            } catch (NullPointerException ex) {
+                if (currentLanguage.equals("English")) {
+                    if (UserFrame.frame != null) {
+                        JOptionPane.showMessageDialog(UserFrame.frame, "Please provide a valid input to search for movies.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    } else if (GuestFrame.frame != null) {
+                        JOptionPane.showMessageDialog(GuestFrame.frame, "Please provide a valid input to search for movies.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                     }
-
-                } else {
-                    if (previous != null) {
-                        this.remove(previous);
+                } else if (currentLanguage.equals("Malay")) {
+                    if (UserFrame.frame != null) {
+                        JOptionPane.showMessageDialog(UserFrame.frame, "Sila berikan input yang betul untuk mencari filem.", "Input Tidak Sah", JOptionPane.ERROR_MESSAGE);
+                    } else if (GuestFrame.frame != null) {
+                        JOptionPane.showMessageDialog(GuestFrame.frame, "Sila berikan input yang betul untuk mencari filem.", "Input Tidak Sah", JOptionPane.ERROR_MESSAGE);
                     }
-                    if (next != null) {
-                        this.remove(next);
-                    }
-                    this.repaint();
-                    this.revalidate();
                 }
             }
         }

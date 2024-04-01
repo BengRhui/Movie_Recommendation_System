@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Movies {
     String title, plot, posterUrl, movieUrl;
@@ -119,10 +120,22 @@ public class Movies {
                         lineArray[4], lineArray[5], lineArray[6]);
                 movieList.add(movie);
             }
+            movieList.sort(Comparator.comparing(Movies::getMovieId));
             readMovieTextFile.close();
+
+            BufferedWriter write = new BufferedWriter(new FileWriter("textfile/Movies.txt"));
+            for (Movies movie: movieList) {
+                write.write(movie.movieIdInDataset + "§" + movie.title + "§" + movie.yearReleased + "§" + movie.movieIdInTMDB + "§" + (movie.plot == null ? "null" : movie.plot) + "§" + (movie.posterUrl == null ? "null" : movie.posterUrl) + "§" + (movie.movieUrl == null ? "null" : movie.movieUrl));
+                write.newLine();
+            }
+            write.close();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "IO error while creating objects. Please inspect system.");
         }
+    }
+
+    public int getMovieId() {
+        return movieIdInDataset;
     }
 
     // Code from: https://developer.themoviedb.org/reference/movie-images (with modification)
@@ -144,7 +157,7 @@ public class Movies {
                 output.delete(0, indexOfOverview);
                 int indexOfLastChar = output.indexOf("\",\"popularity");
                 output.delete(indexOfLastChar, output.length());
-                plot = output.toString();
+                plot = output.toString().replaceAll("\\\\", "");
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error in retrieving movie. Please inspect " + TMDBid);

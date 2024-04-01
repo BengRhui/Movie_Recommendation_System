@@ -144,9 +144,9 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                         Favourite.removeFavouriteFromList(userID, String.valueOf(movieID));
                         bookmarkHolder.setIcon(finalNotBookmarkedIcon);
                         if (currentLanguage.equals("English")) {
-                            JOptionPane.showMessageDialog(null, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            JOptionPane.showMessageDialog(UserFrame.frame, "The movie has been removed from the favourite list.", "Success Remove", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                         } else if (currentLanguage.equals("Malay")) {
-                            JOptionPane.showMessageDialog(null, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            JOptionPane.showMessageDialog(UserFrame.frame, "Filem ini telah dialih keluar dari senarai kegemaran anda.", "Berjaya Dialih Keluar", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                         }
                         UserFrame.frame.dispose();
                         new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);
@@ -156,9 +156,9 @@ public class MovieVideoPage implements ActionListener, MouseListener, KeyListene
                         Favourite.addFavouriteToList(userID, String.valueOf(movieID));
                         bookmarkHolder.setIcon(finalBookmarkedIcon);
                         if (currentLanguage.equals("English")) {
-                            JOptionPane.showMessageDialog(null, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            JOptionPane.showMessageDialog(UserFrame.frame, "The movie has been added to the favourite list.", "Success Added", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                         } else if (currentLanguage.equals("Malay")) {
-                            JOptionPane.showMessageDialog(null, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
+                            JOptionPane.showMessageDialog(UserFrame.frame, "Filem telah ditambah ke senarai kegemaran anda.", "Berjaya Ditambah", JOptionPane.INFORMATION_MESSAGE, new ImageIcon("asset/Success.png"));
                         }
                         UserFrame.frame.dispose();
                         new UserFrame(userID, frame.getX(), frame.getY(), currentLanguage);

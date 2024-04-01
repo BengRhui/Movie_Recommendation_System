@@ -199,7 +199,11 @@ public class ProvideRatingPage implements ActionListener, KeyListener, MouseList
                     throw new NullPointerException();
                 }
 
-                SystemRating rating = new SystemRating(Instant.now(), String.valueOf(systemRating), feedbackInput.getText());
+                if (feedbackInput.getText().isBlank()) {
+                    throw new NullPointerException();
+                }
+
+                SystemRating rating = new SystemRating(Instant.now(), String.valueOf(systemRating), feedbackInput.getText().strip());
                 SystemRating.addSystemRatings(rating);
 
                 if (currentLanguage.equals("English")) {
