@@ -25,14 +25,22 @@ Few things to note
 
 - Before running our code, please ensure that you head to Movie-Recommendation-System/font and install all the necessary fonts in the folders.
 
+
+-----------------------------------------------------------------------------------------------
+How to Run Our Code
+-----------------------------------------------------------------------------------------------
+
 - There are two ways to run our code: via Terminal (macOS) / Command Prompt (Windows) and via an IDE (integrated development environment).
+
 
 - To run our code in Terminal / Command Prompt, please key in the following commands:
 
 1. cd (followed by the pathway of the Movie-Recommendation-System folder)
-   Ex: cd /Users/user1/Downloads/Movie-Recommendation-System
+   Ex: cd /Users/username/Downloads/Movie-Recommendation-System
 
 2. java -cp out/production/Java Main
+
+
 
 - To run our code via an IDE:
 
@@ -45,14 +53,8 @@ Few things to note
 Accounts for System Login
 -----------------------------------------------------------------------------------------------
 
-The accounts used for login can be found via Movie-Recommendation-System/textfile, where adminAccount.txt will consist of the credentials of the admins, while cusstomerAccount.txt will have the credentials for customer.
+The accounts used for login can be found via Movie-Recommendation-System/textfile, where adminAccount.txt will consist of the credentials of the admins, while customerAccount.txt will have the credentials for customers.
 
-
------------------------------------------------------------------------------------------------
-GitHub Link
------------------------------------------------------------------------------------------------
-
-We have uploaded the system into GitHub, with the link ()
 
 -----------------------------------------------------------------------------------------------
 Last note: Have fun using our system!
