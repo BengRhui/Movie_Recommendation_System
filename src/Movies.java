@@ -33,42 +33,6 @@ public class Movies {
         return title;
     }
 
-    /*
-    public static void main(String[] args) {
-        new Movies();
-        int count = 0;
-        for (Movies movie: movieList) {
-            if (movie.posterUrl.equals("null")) {
-                count ++;
-                System.out.println(movie.movieIdInTMDB);
-            }
-        }
-        System.out.println(count);
-    }
-
-    static void replaceChar() {
-        String line;
-        ArrayList<String> tempList = new ArrayList<>();
-        try {
-            BufferedReader file = new BufferedReader(new FileReader("textfile/Movies.txt"));
-            while ((line = file.readLine()) != null) {
-                tempList.add(line.replaceAll(";", "§"));
-            }
-            file.close();
-
-            BufferedWriter file2 = new BufferedWriter(new FileWriter("textfile/Movies.txt"));
-            for (String line2: tempList) {
-                file2.write(line2);
-                file2.newLine();
-            }
-            file2.close();
-        } catch (IOException ex) {
-            System.out.println("System error.");
-        }
-    }
-
-     */
-
     static void movieIdListInitialization() {
         try {
             BufferedReader file = new BufferedReader(new FileReader("textfile/Movies.txt"));
