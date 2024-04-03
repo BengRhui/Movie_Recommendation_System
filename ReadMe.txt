@@ -1,0 +1,59 @@
+-----------------------------------------------------------------------------------------------
+Credits
+-----------------------------------------------------------------------------------------------
+
+- A minor part of the source code originates from the TMDB developer website. 
+
+- We would like to provide credit to the website for providing the codes to retrieve all the movie details (plot, poster and trailer links) via online. 
+
+- The code from the TMDB Developer website is used in the Movies.java class. 
+
+- The link of the website is attached below:
+
+Link: https://developer.themoviedb.org/reference/intro/getting-started
+
+
+-----------------------------------------------------------------------------------------------
+Few things to note
+-----------------------------------------------------------------------------------------------
+
+- Please ensure that you have the latest Java Development Kit (JDK) installed to run our code.
+
+- Please download the ZIP file from Moodle and extract it before running our code.
+
+- Please ensure that your Internet connection is stable while running the code.
+
+- Before running our code, please ensure that you head to Movie-Recommendation-System/font and install all the necessary fonts in the folders.
+
+- There are two ways to run our code: via Terminal (macOS) / Command Prompt (Windows) and via an IDE (integrated development environment).
+
+- To run our code in Terminal / Command Prompt, please key in the following commands:
+
+1. cd (followed by the pathway of the Movie-Recommendation-System folder)
+   Ex: cd /Users/user1/Downloads/Movie-Recommendation-System
+
+2. java -cp out/production/Java Main
+
+- To run our code via an IDE:
+
+1. Download an IDE that can run Java code (Netbeans, Intellij IDEA - Community Edition, Visual Studio Code, etc...)
+
+2. Navigate to the Main.java file and press on the play button to run it.
+
+
+-----------------------------------------------------------------------------------------------
+Accounts for System Login
+-----------------------------------------------------------------------------------------------
+
+The accounts used for login can be found via Movie-Recommendation-System/textfile, where adminAccount.txt will consist of the credentials of the admins, while cusstomerAccount.txt will have the credentials for customer.
+
+
+-----------------------------------------------------------------------------------------------
+GitHub Link
+-----------------------------------------------------------------------------------------------
+
+We have uploaded the system into GitHub, with the link ()
+
+-----------------------------------------------------------------------------------------------
+Last note: Have fun using our system!
+-----------------------------------------------------------------------------------------------
