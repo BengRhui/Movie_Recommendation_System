@@ -64,5 +64,13 @@ The accounts used for login can be found via Movie_Recommendation_System/textfil
 
 
 -----------------------------------------------------------------------------------------------
+Report Documentation
+-----------------------------------------------------------------------------------------------
+
+The report documentation for the system can be accessed via the following link:
+https://github.com/BengRhui/Movie_Recommendation_System/blob/70a305ad72860abad8cdf9c3333a7e97ef2d0718/SDP%20Report.pdf
+
+
+-----------------------------------------------------------------------------------------------
 Last note: Have fun using our system!
 -----------------------------------------------------------------------------------------------
