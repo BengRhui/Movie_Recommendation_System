@@ -26,7 +26,7 @@ Few things to note
 
 - Please ensure that you have the latest Java Development Kit (JDK) installed to run our code.
 
-- Please download the ZIP file from Moodle and extract it before running our code.
+- Please download the ZIP file from Moodle or GitHub and extract it before running our code.
 
 - Please ensure that your Internet connection is stable while running the code.
 
@@ -60,7 +60,7 @@ How to Run Our Code
 Accounts for System Login
 -----------------------------------------------------------------------------------------------
 
-The accounts used for login can be found via Movie-Recommendation-System/textfile, where adminAccount.txt will consist of the credentials of the admins, while customerAccount.txt will have the credentials for customers.
+The accounts used for login can be found via Movie_Recommendation_System/textfile, where adminAccount.txt will consist of the credentials of the admins, while customerAccount.txt will have the credentials for customers.
 
 
 -----------------------------------------------------------------------------------------------
